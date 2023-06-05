@@ -1,4 +1,4 @@
-# Cypress: Book Store
+# Cypress: Article flow
 
 ## Workflow
 
