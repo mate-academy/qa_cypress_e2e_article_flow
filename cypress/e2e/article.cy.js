@@ -32,7 +32,7 @@ describe('Article', () => {
       .should('exist');
   });
 
-  it.only('should be deleted', () => {
+  it('should be deleted', () => {
     cy.login(user.email, user.username, user.password);
 
     cy.createArticle(articleData.title, articleData.description, articleData.body )
