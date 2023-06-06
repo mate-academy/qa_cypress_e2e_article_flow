@@ -4,7 +4,7 @@ describe('Article', () => {
   let user;
   let article;
 
-  before(() => {
+  beforeEach(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
     });
@@ -28,7 +28,7 @@ describe('Article', () => {
       .should('contain' , article.title)      
   });
 
-  it.only('should be deleted using article page', () => {
+  it('should be deleted using article page', () => {
     cy.visit('https://conduit.mate.academy/');
     cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.desc, article.body);
