@@ -24,11 +24,13 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+const faker = require("faker");
+
+Cypress.Commands.add('login', (username, email, password) => {
+  cy.request('POST', 'api/users', {
     user: {
-      email,
       username,
+      email,
       password
     }
   }).then(response => {
@@ -45,13 +47,32 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
+Cypress.Commands.add('createArticle', (username, email, password, title, description, body) => {
+  cy.request('POST', 'api/users', {
+    user: {
+      username: faker.name.firstName(),
+      email: faker.internet.email(),
+      password: '12345Qwert!'
+    }
+  }).then(response => {
+    const user = {
+      bio: response.body.user.bio,
+      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      email: response.body.user.email,
+      image: response.body.user.image,
+      token: response.body.user.token,
+      username: response.body.user.username
+    };
+    window.localStorage.setItem('user', JSON.stringify(user));
+    cy.setCookie('auth', response.body.user.token);
+  });
+
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
     cy.request({
       method: 'POST',
-      url: '/api/articles',
+      url: 'api/articles',
       body: {
         article: {
           title,
