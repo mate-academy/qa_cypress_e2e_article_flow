@@ -4,7 +4,7 @@ describe('', () => {
   let user;
   let article;
 
-  before(() => {
+  beforeEach(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
     });
@@ -29,7 +29,15 @@ describe('', () => {
 
   it('should provide an ability to delete an article', () => {
     cy.login(user.email ,user.username, user.password);
-    cy.visit('/editor');
-    cy.createArticle(article.title, article.description, article.body);
+
+    cy.createArticle(article.title, article.description, article.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
+
+        cy.visit(`/article/${slug}`);
+        cy.contains('.btn', ' Delete Article')
+          .eq(0)
+          .click();
+      });
   });
 });
