@@ -52,12 +52,15 @@ describe('', () => {
       const slug = response.body.article.slug;
 
       cy.visit(`/article/${slug}`);
-
+    
+    });
+    
       cy.get('.btn.btn-outline-danger.btn-sm')
       .should('contain', 'Delete Article')
       .eq(0)
       .click();
 
-    });
+      cy.get('.article-preview')
+      .should('contain', 'No article are here');
   });
 });
