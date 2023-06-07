@@ -1,4 +1,4 @@
-describe('should provide the ability to work with article', () => {
+describe('Should provide the ability to work with article', () => {
   let user;
   let article;
 
@@ -31,8 +31,17 @@ describe('should provide the ability to work with article', () => {
     cy.findByPlaceholder('Enter tags')
       .type(article.tag);
 
-   cy.contains('.btn', 'Publish Article')
-    .click();
+    cy.contains('.btn', 'Publish Article')
+      .click();
+
+    cy.get('h1')
+      .should('contain', article.title);
+
+    cy.get('.col-md-12')
+      .should('contain', article.body);
+
+    cy.get('.tag-list')
+      .should('contain', article.tag);
   });
 
   it('should allow to delete an article', () => {
@@ -45,7 +54,7 @@ describe('should provide the ability to work with article', () => {
         cy.contains('.btn', 'Delete Article')
           .click();
         cy.get('.article-preview')
-          .should('contain', 'No articles are here... yet.')
+          .should('contain', 'No articles are here... yet.');
       });
   });
 });
