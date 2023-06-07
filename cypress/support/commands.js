@@ -24,11 +24,15 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
+});
+
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  cy.request('POST', 'api/users', {
     user: {
-      email,
       username,
+      email,
       password
     }
   }).then(response => {
@@ -48,7 +52,6 @@ Cypress.Commands.add('login', (email, username, password) => {
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
-
     cy.request({
       method: 'POST',
       url: '/api/articles',
