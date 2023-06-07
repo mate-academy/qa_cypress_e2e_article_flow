@@ -47,9 +47,12 @@ describe('Article page', () => {
     cy.createArticle(article.title, article.description, article.body).then(response => {
       const slug = response.body.article.slug;
       cy.visit(`/article/${slug}`);
-      cy.get('.btn.btn-outline-danger.btn-sm')
-        .eq(0)
-        .click();
     });
+    cy.get('.btn.btn-outline-danger.btn-sm')
+      .eq(0)
+      .click();
+    cy.visit('/');
+    cy.get('.article-preview')
+      .should('contain', 'No articles are here... yet.');
   });
 });
