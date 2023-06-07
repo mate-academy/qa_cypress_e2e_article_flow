@@ -40,9 +40,9 @@ describe('', () => {
         cy.visit(`https://conduit.mate.academy/article/${slug}`);
 
         cy.contains('.btn', 'Delete Article').eq(0).click('');
-
-//      cy.url(`https://conduit.mate.academy/article/${slug}`).should('not.exist');
       });
-      cy.url().should('eq', 'https://conduit.mate.academy/')
+      cy.visit('https://conduit.mate.academy/');
+      cy.contains('.link', 'Your Feed').click();
+      cy.get('.article-preview').should('contain', 'No articles are here... yet.');
   });
 });
