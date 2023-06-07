@@ -54,6 +54,9 @@ describe('New article form', () => {
         cy.visit(`/article/${slug}`)
         cy.contains('.btn', 'Delete Article')
         .click();
+
+        cy.get('.article-preview')
+          .should('contain', 'No article are here');
       });
   });
 });
