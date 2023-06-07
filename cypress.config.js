@@ -14,6 +14,14 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
+        },
+        generateArticle() {
+          return {
+            title: faker.lorem.words(),
+            description: faker.lorem.words(),
+            body: faker.lorem.words(),
+            tag: faker.lorem.word()
+          };
         }
       });
     }
