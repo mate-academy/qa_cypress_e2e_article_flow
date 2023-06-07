@@ -31,8 +31,11 @@ describe('should provide the ability to work with article', () => {
     cy.findByPlaceholder('Enter tags')
       .type(article.tag);
 
-   cy.contains('.btn', 'Publish Article')
-    .click();
+    cy.contains('.btn', 'Publish Article')
+      .click();
+
+    cy.get('h1')
+      .should('contain', article.title);
   });
 
   it('should allow to delete an article', () => {
