@@ -3,17 +3,16 @@
 describe('', () => {
   let user;
   let article;
-  before(() => {
+ 
+  beforeEach(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
     });
 
     cy.task('generateArticle').then((generateArticle) => {
       article = generateArticle;
-    })
-  });
+    });
 
-  beforeEach(() => {
     cy.visit('https://conduit.mate.academy/');
   })
 
