@@ -23,6 +23,7 @@ describe('User', () => {
       .type(article.body);
     cy.contains('.btn', 'Publish Article')
       .click();
+    cy.contains('.container', article.title).should('exist');
   });
 
   it('Should delete an article', () => {
