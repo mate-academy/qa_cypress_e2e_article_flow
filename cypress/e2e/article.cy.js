@@ -1,5 +1,7 @@
+import '../support/commands';
 import faker from 'faker';
 
+// in this test suite we check flows of article creating and article deleting
 describe('', () => {
   let user;
    
@@ -11,6 +13,7 @@ describe('', () => {
     });
   });
 
+  // this test is for flow of article creating
   it('should create the article', () => {
   
     const title = faker.lorem.sentence();
@@ -27,7 +30,7 @@ describe('', () => {
     });
   });
 
-
+  //this test is for flow of article deleting
   it('should delete the article', () => {
 
     const title = faker.lorem.sentence();
@@ -51,6 +54,9 @@ describe('', () => {
         .click();
       
       cy.get('a.nav-link[href^="/profile/"]').click();
+      cy.reload();
+      //cy.contains('a.nav-link.active', 'Your Feed').click();
+
 
       cy.contains(title).should('not.exist');
       cy.contains(description).should('not.exist');
@@ -58,4 +64,3 @@ describe('', () => {
   });
 });
 });
-
