@@ -2,7 +2,7 @@ import '../support/commands';
 import faker from 'faker';
 
 // in this test suite we check flows of article creating and article deleting
-describe('', () => {
+describe('Flows for article', () => {
   let user;
    
   beforeEach(() => {
