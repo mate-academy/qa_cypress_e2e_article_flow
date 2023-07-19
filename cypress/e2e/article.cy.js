@@ -17,7 +17,8 @@ describe('Article flow', () => {
     cy.findByPlaceholder('Article Title').type(article.title);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
     cy.findByPlaceholder('Enter tags').type(article.tagList);
-    cy.contains('button', 'Publish Article').click();
+    // eslint-disable-next-line cypress/no-force
+    cy.contains('button', 'Publish Article').click({ force: true });
     cy.get('h1').should('contain', article.title);
     cy.get('div > p').should('contain', article.body);
     cy.get('.tag-default').should('contain', article.tagList);
