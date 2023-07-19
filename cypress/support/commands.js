@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -24,16 +25,17 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+// eslint-disable-next-line max-len
+Cypress.Commands.add('login', (email = '123test@mail.com', password = 'Password') => {
+  cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
     user: {
       email,
-      username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
+      // eslint-disable-next-line max-len
       effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
@@ -43,9 +45,10 @@ Cypress.Commands.add('login', (email, username, password) => {
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+  cy.visit('/');
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
+Cypress.Commands.add('createArticle', (title, description, body, tagList) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
@@ -65,4 +68,8 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
 });
