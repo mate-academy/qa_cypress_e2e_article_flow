@@ -24,14 +24,13 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+Cypress.Commands.add('login', (email = 'abcde@gmail.com', password = 'Fcdk1927') => {
+  cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
     user: {
       email,
-      username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
       effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
@@ -43,6 +42,7 @@ Cypress.Commands.add('login', (email, username, password) => {
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+  cy.visit('/');
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
@@ -65,4 +65,8 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder='${placeholder}']`);
 });
