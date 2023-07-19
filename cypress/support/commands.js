@@ -1,35 +1,11 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+const faker = require('faker');
 
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  cy.request('POST', '/api/users/login', {
     user: {
-      email,
-      username,
-      password
+      email: 'joebin@gmail.com',
+      username: 'joebin1',
+      password: 'joebin1'
     }
   }).then(response => {
     const user = {
@@ -43,21 +19,21 @@ Cypress.Commands.add('login', (email, username, password) => {
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+  cy.visit('/');
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
-
     cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
         article: {
-          title,
-          description,
-          body,
-          tagList: []
+          title: "furry1",
+          description: "lorem.ipsum",
+          body: "hooooooolld on",
+          tagList: [faker.lorem.word(), faker.lorem.word()]
         }
       },
       headers: {
@@ -66,3 +42,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
     });
   });
 });
+
+Cypress.Commands.add('pickPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`)
+})
