@@ -14,8 +14,18 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
+        },
+        generateArticle() {
+          const randomNumber = Math.floor(Math.random(1000) * 1000);
+          return {
+            title: faker.lorem.word() + randomNumber,
+            description: faker.lorem.words(),
+            body: faker.lorem.words(),
+            tags: String([faker.lorem.word(), faker.lorem.word()])
+          }
         }
       });
+
     }
   }
 });
