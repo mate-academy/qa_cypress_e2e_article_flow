@@ -1,21 +1,14 @@
 describe('Article flow', () => {
-  const user = {
-    email: 'conarticle@qa.team',
-    username: 'articletest',
-    password: 'ArticleTest1@'
-  };
-
   let article;
 
   beforeEach(() => {
-    cy.login(user.email, user.username, user.password);
+    cy.loginConduit();
     cy.task('newArticle').then((newArticle) => {
       article = newArticle;
     });
   });
 
   it('should allow to create a new article', () => {
-    cy.visit('/');
     // eslint-disable-next-line cypress/no-force
     cy.get('[href="/editor"]').click({ force: true });
     cy.findByPlaceholder('Article Title').type(article.title);
