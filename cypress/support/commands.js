@@ -24,16 +24,12 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('findByPlaceholder', (placeholder) => {
-  return cy.get(`[placeholder="${placeholder}"]`);
-});
-
-Cypress.Commands.add('login', (email = 'snchkmelnyk+2@gmail.com', password = 'qwerty123') => {
+Cypress.Commands.add('login', (email = 'xisuxo@mailinator.com', password = 'qwerty123') => {
   cy.request('POST', '/api/users/login', {
     user: {
       email,
-      password
-    }
+      password,
+    },
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
@@ -41,16 +37,22 @@ Cypress.Commands.add('login', (email = 'snchkmelnyk+2@gmail.com', password = 'qw
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
-      username: response.body.user.username
+      username: response.body.user.username,
     };
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+  cy.visit('/');
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder="${placeholder}"]`);
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
+
     cy.request({
       method: 'POST',
       url: '/api/articles',
