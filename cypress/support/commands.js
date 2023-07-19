@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // eslint-disable-next-line max-len
-Cypress.Commands.add('loginConduit', (email = 'testing@gmail.com', password = '12345') => {
+Cypress.Commands.add('loginConduit', (email = 'conarticl@qa.team', password = 'ArticleTest1@') => {
   cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
     user: {
       email,
