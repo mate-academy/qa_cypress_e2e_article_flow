@@ -24,16 +24,17 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+// eslint-disable-next-line
+Cypress.Commands.add('loginConduit', (email = 'testing@gmail.com', password = '12345') => {
+  cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
     user: {
       email,
-      username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
+      // eslint-disable-next-line
       effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
@@ -43,6 +44,11 @@ Cypress.Commands.add('login', (email, username, password) => {
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+  cy.visit('/');
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
