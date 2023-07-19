@@ -1,18 +1,19 @@
-const { defineConfig } = require("cypress");
-const faker = require('faker');
+/* eslint-disable */
+const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
+    viewportHeight: 780,
+    viewportWidth: 1020,
     baseUrl: 'https://conduit.mate.academy/',
     setupNodeEvents(on, config) {
       on('task', {
-        generateUser() {
-          const email = faker.internet.email();
-          const randomNumber = Math.floor(Math.random(1000) * 1000);
+        newArticle() {
           return {
-            username: faker.name.firstName() + randomNumber,
-            email: email.toLowerCase(),
-            password: '12345Qwert!'
+            title: '123',
+            description: '123',
+            body: '123',
+            tag: '123'
           };
         }
       });
