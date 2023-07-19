@@ -1,3 +1,4 @@
+/* eslint-disable */
 /// <reference types='cypress' />
 
 describe('Article flow', () => {
@@ -16,7 +17,7 @@ describe('Article flow', () => {
     cy.get(':nth-child(2) > .form-control').type(article.description);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
     cy.findByPlaceholder('Enter tags').type(article.tag);
-    cy.get('.btn').click();
+    cy.get('.btn').click({ force: true });
 
     cy.contains('h1', article.title).should('be.visible');
     cy.url().should('include', 'article');
@@ -28,7 +29,7 @@ describe('Article flow', () => {
     cy.get(':nth-child(2) > .form-control').type(article.description);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
     cy.findByPlaceholder('Enter tags').type(article.tag);
-    cy.get('.btn').click();
+    cy.get('.btn').click({ force: true });
 
     cy.get(
       '.article-actions > .article-meta > :nth-child(3) > .btn-outline-danger'

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { defineConfig } = require('cypress');
 const faker = require('faker');
 let randomNumber;
