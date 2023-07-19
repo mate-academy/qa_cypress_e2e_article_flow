@@ -24,17 +24,21 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
+});
+
+Cypress.Commands.add('login', (email = 'testuser003@qa.team',
+  password = 'Qwer123#') => {
+  cy.request('POST', '/api/users/login', {
     user: {
       email,
-      username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage: '',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
