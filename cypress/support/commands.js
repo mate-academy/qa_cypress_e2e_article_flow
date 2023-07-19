@@ -30,17 +30,20 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       url: '/api/articles',
       body: {
         article: {
-          title: "furry1",
-          description: "lorem.ipsum",
-          body: "hooooooolld on",
-          tagList: [faker.lorem.word(), faker.lorem.word()]
+          title,
+          description,
+          body,
+          tagList: []
         }
       },
       headers: {
         Authorization: `Token ${authToken}`
       }
     });
-  });
+  }).then((response) => {
+    let slug;
+    slug = response.body.article.slug;
+    cy.visit(`article/${slug}`)});
 });
 
 Cypress.Commands.add('pickPlaceholder', (placeholder) => {

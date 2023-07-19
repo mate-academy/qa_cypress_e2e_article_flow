@@ -4,12 +4,9 @@ let user;
 
 describe('Article flow suit', () => {
   beforeEach(() => {
-    article = {
-      title: faker.lorem.word() + Math.floor(Math.random(1000) * 1000),
-      description: faker.lorem.words(),
-      body: faker.lorem.words(),
-      tags: String([faker.lorem.word(), faker.lorem.word()]),
-    };
+    cy.task('generateArticle').then(generateArticle => {
+      article = generateArticle;
+    });
     user = {
       username: 'joebin1'
     };
@@ -17,13 +14,8 @@ describe('Article flow suit', () => {
   });
 
   it('should create an article', () => {
-    cy.get('[href="/editor"]').click();
-    cy.pickPlaceholder('Article Title').type(article.title);
-    cy.pickPlaceholder('What\'s this article about?').type(article.description);
-    cy.pickPlaceholder('Write your article (in markdown)').type(article.body);
-    cy.pickPlaceholder('Enter tags').type(article.tags);
-
-    cy.contains('button', 'Publish').click() 
+    cy.createArticle(article.title, article.description, article.body);
+    
     cy.contains('h1', article.title).should('be.visible');
     cy.contains('a', 'Edit Article').should('be.visible');
     cy.contains('p', article.body).should('be.visible');
@@ -31,13 +23,9 @@ describe('Article flow suit', () => {
   });
 
   it('should delete article', () => {
-    cy.get('[href="/editor"]').click();
-    cy.pickPlaceholder('Article Title').type(article.title);
-    cy.pickPlaceholder('What\'s this article about?').type(article.description);
-    cy.pickPlaceholder('Write your article (in markdown)').type(article.body);
-    cy.pickPlaceholder('Enter tags').type(article.tags);
 
-    cy.contains('button', 'Publish').click() 
+    cy.createArticle(article.title, article.description, article.body);
+
     cy.contains('h1', article.title).should('be.visible');
     cy.contains('a', 'Edit Article').should('be.visible');
     cy.contains('p', article.body).should('be.visible');

@@ -18,10 +18,10 @@ module.exports = defineConfig({
         generateArticle() {
           const randomNumber = Math.floor(Math.random(1000) * 1000);
           return {
-            titlename: faker.lorem.word() + randomNumber,
+            title: faker.lorem.word() + randomNumber,
             description: faker.lorem.words(),
             body: faker.lorem.words(),
-            tagList: [faker.lorem.word(), faker.lorem.word()]
+            tags: String([faker.lorem.word(), faker.lorem.word()])
           }
         }
       });
