@@ -31,7 +31,7 @@ Cypress.Commands.add('findByPlaceholder', (placeholder) => {
 
 Cypress.Commands.add(
   'loginConduit',
-  (email = 'pantera@qa.team', password = 'pantera123!') => {
+  (email = 'panterasuper@qa.team', password = 'superpantera135$') => {
     cy.request('POST', '/api/users/login', {
       user: {
         email,

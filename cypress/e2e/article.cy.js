@@ -12,27 +12,25 @@ describe('Article flow', () => {
   });
 
   it('should allow to create article', () => {
-    cy.get('.container > .nav > :nth-child(2) > .nav-link').click();
+    cy.get('[href="/editor"]').click();
     cy.findByPlaceholder('Article Title').type(article.title);
-    cy.get(':nth-child(2) > .form-control').type(article.description);
+    cy.get('[placeholder="What\'s this article about?"]').type(article.description);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
     cy.findByPlaceholder('Enter tags').type(article.tag);
-    cy.get('.btn').click({ force: true });
+    cy.contains('button', 'Publish Article').click({ force: true });
 
     cy.contains('h1', article.title).should('be.visible');
     cy.url().should('include', 'article');
   });
 
   it('should allow to delete article', () => {
-    cy.get('.container > .nav > :nth-child(2) > .nav-link').click();
+    cy.get('[href="/editor"]').click();
     cy.findByPlaceholder('Article Title').type(article.title);
-    cy.get(':nth-child(2) > .form-control').type(article.description);
+    cy.get('[placeholder="What\'s this article about?"]').type(article.description);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
     cy.findByPlaceholder('Enter tags').type(article.tag);
-    cy.get('.btn').click({ force: true });
+    cy.contains('button', 'Publish Article').click({ force: true });
 
-    cy.get(
-      '.article-actions > .article-meta > :nth-child(3) > .btn-outline-danger'
-    ).click();
+    cy.contains('button', 'Delete Article').click();
   });
 });
