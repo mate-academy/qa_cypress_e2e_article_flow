@@ -1,22 +1,19 @@
-
 describe('Article', () => {
   let user;
   let articleTest;
 
-  beforeEach(() => {
+  before(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
+      cy.login(user.email, user.password);
     });
 
     cy.task('generateArticle').then((generateArticle) => {
       articleTest = generateArticle;
     });
-
-    cy.visit('');
   });
 
-  it('The article should be created', () => {
-    cy.login(user.email, user.username, user.password);
+  it('should create an article', () => {
     cy.visit('/editor');
     cy.get('[placeholder="Article Title"]').type(articleTest.title);
     cy.get('[placeholder="What\'s this article about?"]')
@@ -24,20 +21,22 @@ describe('Article', () => {
     cy.get('[placeholder="Write your article (in markdown)"]')
       .type(articleTest.body);
     cy.contains('.btn', 'Publish Article').click();
+
     cy.contains('.container', articleTest.title).should('exist');
   });
 
-  it('The article should be deleted', () => {
-    cy.login(user.email, user.username, user.password);
+  it('should delete an article', () => {
+    cy.login(user.email, user.password);
+
+    cy.getCookie('auth').should('exist');
 
     cy.createArticle(articleTest.title, articleTest.description,
       articleTest.body)
       .then((response) => {
         const slug = response.body.article.slug;
         cy.visit(`/article/${slug}`);
+        cy.contains('.btn', 'Delete Article').click();
+        cy.get('.article-preview').should('contain', 'No articles are here');
       });
-
-    cy.contains('.btn', 'Delete Article').click();
-    cy.get('.article-preview').should('contain', 'No articles are here');
   });
 });
