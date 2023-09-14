@@ -37,6 +37,8 @@ describe('Article', () => {
         cy.visit(`/article/${slug}`);
         cy.contains('.btn', 'Delete Article').click();
         cy.get('.article-preview').should('contain', 'No articles are here');
+        cy.visit('/');
+        cy.contains('.article-preview', articleTest.title).should('not.exist');
       });
   });
 });
