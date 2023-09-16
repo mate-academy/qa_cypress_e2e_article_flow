@@ -1,13 +1,11 @@
 describe('Article', () => {
   let user;
   let articleTest;
-
-  beforeEach(() => {
+  before(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
       cy.login(user.email, user.password);
     });
-
     cy.task('generateArticle').then((generateArticle) => {
       articleTest = generateArticle;
     });
