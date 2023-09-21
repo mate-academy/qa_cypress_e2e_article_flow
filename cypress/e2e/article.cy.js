@@ -1,4 +1,4 @@
-describe('articlePage', () => {
+describe('Article creation and deletion', () => {
   let user;
   let article;
 
@@ -11,25 +11,31 @@ describe('articlePage', () => {
     });
   });
 
-  it('should allow to create a new article', () => {
-    cy.registration(user.email, user.username, user.password);
+  it('should provide an ability to create a new article', () => {
+    cy.registrationAndLogin(user.email, user.username, user.password);
     cy.visit('/editor');
 
-    cy.get('[placeholder="Article Title"]').type(article.title);
-    cy.get('[placeholder="What\'s this article about?"]')
+    cy.findbyPlaceholder('Article Title').type(article.title);
+    cy.findbyPlaceholder('What\'s this article about?')
       .type(article.description);
-    cy.get('[placeholder="Write your article (in markdown)"]')
+    cy.findbyPlaceholder('Write your article (in markdown)')
       .type(article.body);
-    cy.get('[type="button"]').click();
+    cy.contains('Publish Article').click();
   });
 
-  it('should allo to delete an article', () => {
-    cy.registration(user.email, user.username, user.password);
-    cy.createArticle(article.title, article.description, article.body)
+  it.only('should provide an ability to delete an article', () => {
+    cy.createArticle(
+      user.username,
+      user.email,
+      user.password,
+      article.title,
+      article.description,
+      article.body
+    )
       .then((response) => {
         cy.visit(`/article/${response.body.article.slug}`);
       });
-    cy.contains('button', 'Delete Article').click();
+    cy.get('.article-actions').contains('Delete Article').click();
     cy.on('window:confirm', (alert) => {
       expect(alert).to.equal('Do you really want to delete it?');
       return true;
