@@ -23,7 +23,7 @@ describe('Article creation and deletion', () => {
     cy.contains('Publish Article').click();
   });
 
-  it.only('should provide an ability to delete an article', () => {
+  it('should provide an ability to delete an article', () => {
     cy.createArticle(
       user.username,
       user.email,
