@@ -31,10 +31,9 @@ describe('Article creation and deletion', () => {
       article.title,
       article.description,
       article.body
-    )
-      .then((response) => {
-        cy.visit(`/article/${response.body.article.slug}`);
-      });
+    ).then((response) => {
+      cy.visit(`/article/${response.body.article.slug}`);
+    });
     cy.get('.article-actions').contains('Delete Article').click();
     cy.on('window:confirm', (alert) => {
       expect(alert).to.equal('Do you really want to delete it?');
