@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('registration', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
       email,
@@ -34,7 +34,8 @@ Cypress.Commands.add('login', (email, username, password) => {
   }).then(response => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage:
+        'https://static.productionready.io/images/smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
@@ -45,6 +46,32 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
+// Cypress.Commands.add('createArticle', (title, description, body) => {
+//   cy.request('POST', '/api/users'), {
+//     user: {
+//       email: 'emailrest@gmail.com',
+//       username: 'userQwer',
+//       password: '12345Qwert!'
+//     }
+//   }).then(response => {
+//     cy.setCookie('auth', response.body.user.token);
+//     cy.request({
+//       method: 'POST',
+//       url: '/api/editor',
+//       body: {
+//         article: {
+//           title,
+//           description,
+//           body,
+//           tagList: ''
+//         }
+//       },
+//       headers: {
+//         Authorization: `Token ${authToken}`
+//       }
+//     });
+//   });
+// }
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
