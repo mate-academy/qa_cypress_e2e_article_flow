@@ -23,6 +23,7 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+const imageLink = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
@@ -31,10 +32,10 @@ Cypress.Commands.add('login', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage: imageLink,
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
@@ -65,4 +66,12 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('fillWith', (element, text) => {
+  cy.get(element).type(text);
+});
+
+Cypress.Commands.add('clickOnElement', (element, text) => {
+  cy.contains(element, text).click();
 });
