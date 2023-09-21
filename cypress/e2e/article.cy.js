@@ -22,11 +22,15 @@ describe('', () => {
 
   it('should provide an ability to delete the created article', () => {
     cy.login(user.email, user.username, user.password);
-    cy.createArticle(article.title, article.description, article.body, article.tagList);
-    cy.visit('/article');
-    cy.contains('.btn btn-outline-danger btn-sm', 'Delete Article').click();
-    cy.on('window:confirm', (alert) => {
-      expect(alert).to.equal('Do you really want to delete it?'), {enter};
+    cy.visit('/editor');
+    cy.createArticle(article.title, article.description, article.body)
+      .then(response => {
+        const slug = response.body.article.slug;
+    cy.visit(article/`${slug}`);
+    });
+    cy.contains('button', 'Delete Article')
+      .click();
+   
   });
-})
 });
+
