@@ -18,7 +18,8 @@ describe('Article flow', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     cy.findByPlaceholder('Article Title').type(article.title);
-    cy.findByPlaceholder('What\'s this article about?').type(article.description);
+    cy.findByPlaceholder('What\'s this article about?')
+    .type(article.description);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
     cy.findByPlaceholder('Enter tags').type(article.tags);
     cy.contains('button', 'Publish Article').click({ force: true });
@@ -28,14 +29,10 @@ describe('Article flow', () => {
 
   it('should delete an article', () => {
     cy.login(user.email, user.username, user.password);
-    cy.visit('/editor');
-    cy.findByPlaceholder('Article Title').type(article.title);
-    cy.findByPlaceholder('What\'s this article about?').type(article.description);
-    cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
-    cy.findByPlaceholder('Enter tags').type(article.tags);
-    cy.contains('button', 'Publish Article').click({ force: true });
-    cy.contains('h1', article.title).should('be.visible');
-    cy.url().should('include', 'article');
+    cy.createArticle(article.title, article.description, article.body)
+    .then((response) => {
+      cy.visit(`article/${response.body.article.slug}`);
+    });
     cy.contains('button', 'Delete Article').click();
     cy.on('window:alert', (alert) => {
       expect(alert).to.equal('Do you really want to delete it?');
