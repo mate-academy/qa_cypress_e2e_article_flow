@@ -1,3 +1,16 @@
+Cypress.Commands.add('login', (email, password) => {
+  cy.get('[placeholder="Email"]').type(email);
+  cy.get('[placeholder="Password"]').type(password);
+  cy.get('.btn').click();
+});
+
+Cypress.Commands.add('createArticle', (title, description, body) => {
+  cy.get('[placeholder="Article Title"]').type(title);
+  cy.get('[placeholder="What\'s this article about?"]').type(description);
+  cy.get('[placeholder="Write your article (in markdown)"]').type(body);
+  cy.contains('Publish Article').click();
+});
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -42,20 +55,8 @@
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
-}); */
-Cypress.Commands.add('login', (email, password) => {
-    cy.get('[placeholder="Email"]').type(email);
-    cy.get('[placeholder="Password"]').type(password);
-    cy.get('.btn').click();
-});
-
-Cypress.Commands.add('createArticle', (title, description, body) => {
-    cy.get('[placeholder="Article Title"]').type(title);
-    cy.get('[placeholder="What\'s this article about?"]').type(description);
-    cy.get('[placeholder="Write your article (in markdown)"]').type(body);
-    cy.contains('Publish Article').click();
-  });
-/*Cypress.Commands.add('createArticle', (title, description, body) => {
+});   */
+  /*Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
@@ -75,4 +76,3 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });*/
-
