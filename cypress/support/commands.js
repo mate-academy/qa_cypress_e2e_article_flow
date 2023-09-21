@@ -31,7 +31,7 @@ Cypress.Commands.add('registration', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
       effectiveImage:
