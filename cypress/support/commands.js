@@ -10,7 +10,7 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+//Cypress.Commands.add('login', (email, password) => { ... })
 //
 //
 // -- This is a child command --
@@ -24,12 +24,11 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
+/* Cypress.Commands.add('login', (email, password,) => {
   cy.request('POST', '/api/users', {
     user: {
       email,
-      username,
-      password
+      password,
     }
   }).then(response => {
     const user = {
@@ -43,9 +42,20 @@ Cypress.Commands.add('login', (email, username, password) => {
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+}); */
+Cypress.Commands.add('login', (email, password) => {
+    cy.get('[placeholder="Email"]').type(email);
+    cy.get('[placeholder="Password"]').type(password);
+    cy.get('.btn').click();
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
+    cy.get('[placeholder="Article Title"]').type(title);
+    cy.get('[placeholder="What\'s this article about?"]').type(description);
+    cy.get('[placeholder="Write your article (in markdown)"]').type(body);
+    cy.contains('Publish Article').click();
+  });
+/*Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
@@ -64,5 +74,5 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
         Authorization: `Token ${authToken}`
       }
     });
-  });
-});
+  });*/
+
