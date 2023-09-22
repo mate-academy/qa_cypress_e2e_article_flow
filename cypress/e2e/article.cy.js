@@ -12,7 +12,7 @@ describe('Article creation and deletion', () => {
   });
 
   it('should provide an ability to create a new article', () => {
-    cy.registrationAndLogin(user.email, user.username, user.password);
+    cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
 
     cy.findbyPlaceholder('Article Title').type(article.title);
@@ -21,6 +21,17 @@ describe('Article creation and deletion', () => {
     cy.findbyPlaceholder('Write your article (in markdown)')
       .type(article.body);
     cy.contains('Publish Article').click();
+
+    cy.get('.banner')
+      .should('contain.text', article.title);
+    cy.get('.article-content')
+      .should('contain', article.body);
+    cy.get('.btn')
+      .contains('Edit Article')
+      .should('be.visible');
+    cy.get('.btn')
+      .contains('Delete Article')
+      .should('be.visible');
   });
 
   it('should provide an ability to delete an article', () => {
