@@ -24,6 +24,7 @@ describe('Create and delete the article', () => {
       .type(article.body);
     cy.contains('button', 'Publish Article')
       .click({ force: true });
+    cy.get('.banner').should('contain', article.title)
   });
 
   it('Delete the article', () => {
