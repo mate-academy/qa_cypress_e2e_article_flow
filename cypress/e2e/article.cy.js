@@ -29,7 +29,6 @@ describe('Article', () => {
 
   it('should provide the ability to create new article', () => {
     cy.login(user.username, user.password);
-    cy.visit('https://conduit.mate.academy');
 
     cy.get('.nav-link')
       .should('contain', 'New Article').click();
@@ -57,6 +56,13 @@ describe('Article', () => {
       article.description, article.body, article.tags)
       .then((response) => {
         cy.visit(`/articles/${response.body.article.slug}`);
+        cy.get('.btn').contains(' Delete Article').click();
+        cy.on('window:confirm', (alert) => {
+          expect(alert).to.equal('Do you really want to delete it?');
+          return true;
+        });
+        cy.get('.article-preview')
+          .should('contain', 'No articles are here... yet.');
       });
   });
 });
