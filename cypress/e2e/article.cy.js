@@ -15,7 +15,7 @@ describe('Article flow', () => {
 
   });
 
-  it.skip('should create an article', () => {
+  it('should create an article', () => {
     cy.login(user.email, user.username, user.password);
   
     cy.visit('/editor');
