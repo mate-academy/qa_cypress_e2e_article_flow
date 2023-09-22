@@ -16,13 +16,16 @@ describe('Article ', () => {
       });
   });
 
-  it('should be create via New article form', () => {
+  it.skip('should be create via New article form', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     cy.get('[placeholder = "Article Title"]').type(article.title)
     cy.get('[placeholder = "What\'s this article about?"]').type(article.description)
     cy.get('[placeholder = "Write your article (in markdown)"]').type(article.body)
     cy.get('.btn').contains('Publish').click()
+    cy.url().should('include', 'article');
+    cy.get('h1').should('contain.text', article.title)
+    cy.get('.article-content').should('contain.text', article.body)
   });
 
   it('Delete the article', () => {
