@@ -18,6 +18,10 @@ describe('Create article', () => {
     cy.get('[placeholder^="What\'s this"]').type(article.description);
     cy.get('[placeholder^="Write your"]').type(article.body);
     cy.get('[type="button"]').click();
+    cy.get('.article-page').should('contain', article.title);
+    cy.get('.article-content').should('contain', article.body);
+    cy.get('.btn').contains('Edit Article').should('be.visible');
+    cy.get('.btn').contains('Delete Article').should('be.visible');
   });
 
   it('should provide an ability to delete article', () => {
