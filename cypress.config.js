@@ -20,7 +20,7 @@ module.exports = defineConfig({
             title: faker.random.word(),
             description: faker.random.word(),
             body: faker.random.word(),
-            tags: faker.random.word()
+            tag: faker.random.word()
           };
         }
       });

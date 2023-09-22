@@ -21,7 +21,7 @@ describe('Article flow', () => {
     cy.findByPlaceholder('What\'s this article about?')
     .type(article.description);
     cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
-    cy.findByPlaceholder('Enter tags').type(article.tags);
+    cy.findByPlaceholder('Enter tags').type(article.tag);
     cy.contains('button', 'Publish Article').click({ force: true });
     cy.contains('h1', article.title).should('be.visible');
     cy.url().should('include', 'article');
