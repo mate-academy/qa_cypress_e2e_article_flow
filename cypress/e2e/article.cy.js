@@ -25,7 +25,7 @@ describe('Article page', () => {
   it(' should allow to delete the article', () => {
     cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
-    .then((response) => {
+      .then((response) => {
       cy.visit(`article/${response.body.article.slug}`);
       cy.get('.article-actions .ion-trash-a').click();
       cy.get('.article-preview').should('contain', 'No articles are here... yet.');
