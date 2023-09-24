@@ -11,7 +11,8 @@ module.exports = {
   overrides: [
   ],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
+    project: './tsconfig.json'
   },
   plugins: [
     'cypress'
