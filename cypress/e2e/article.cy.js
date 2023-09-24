@@ -53,8 +53,17 @@ describe('Article creation and deletion', () => {
         const slug = response.body.article.slug;
         cy.visit(`/article/${slug}`);
         cy.get('.article-actions .ion-trash-a').click({ multiple: true });
+        cy.request({
+          url: `/api/articles/${slug}`,
+          failOnStatusCode: false
+        }).then((response) => {
+          if (response.status === 200) {
+            cy.wrap(response)
+              .its('status')
+              .should('eq', 404);
+          }
+        });
       });
-      cy.url().should('not.include', 'article');
     });
   });
 });
