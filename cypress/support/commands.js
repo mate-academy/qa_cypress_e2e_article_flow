@@ -24,6 +24,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+// Cypress.Commands.add('registration', (username, email, password) => {
+// cy.request('POST', 'https://conduit.mate.academy/api/users', {
+//   username,
+//   email,
+//   password
+// });
+// });
+// }).then((response) => {
+//   cy.setCookie('token', response.body.token);
+//   cy.setCookie('userName', response.body.username);
+//   cy.setCookie('userID', response.body.userId);
+//   cy.setCookie('expires', response.body.expires);
+// })
+
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
@@ -44,6 +58,7 @@ Cypress.Commands.add('login', (email, username, password) => {
     cy.setCookie('auth', response.body.user.token);
   });
 });
+
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
