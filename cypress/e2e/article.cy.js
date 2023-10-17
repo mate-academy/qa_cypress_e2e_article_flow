@@ -3,6 +3,7 @@ describe('Article creation and deletion', () => {
   let article;
 
   beforeEach(() => {
+    cy.visit('/');
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
     });
@@ -11,34 +12,33 @@ describe('Article creation and deletion', () => {
     });
   });
 
-  it('should provide an ability to create a new article', () => {
-    cy.registrationAndLogin(user.email, user.username, user.password);
+  it('should provide the ability to create an article', () => {
+    cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
-
-    cy.findbyPlaceholder('Article Title').type(article.title);
-    cy.findbyPlaceholder('What\'s this article about?')
+    cy.getByPlaceholder('Article Title').type(article.title);
+    cy.getByPlaceholder('What\'s this article about?')
       .type(article.description);
-    cy.findbyPlaceholder('Write your article (in markdown)')
-      .type(article.body);
-    cy.contains('Publish Article').click();
+    cy.getByPlaceholder('Write your article (in markdown)').type(article.body);
+    cy.getByPlaceholder('Enter tags').type(article.tag + '{enter}');
+    cy.contains('button', 'Publish Article').click();
+
+    cy.get('h1').should('contain', article.title);
+    cy.get('.col-md-12').should('contain', article.body);
+    cy.get('.tag-default').should('contain', article.tag);
   });
 
-  it('should provide an ability to delete an article', () => {
-    cy.createArticle(
-      user.username,
-      user.email,
-      user.password,
-      article.title,
-      article.description,
-      article.body
-    ).then((response) => {
-      cy.visit(`/article/${response.body.article.slug}`);
-    });
-    cy.get('.article-actions').contains('Delete Article').click();
-    cy.on('window:confirm', (alert) => {
-      expect(alert).to.equal('Do you really want to delete it?');
-      return true;
-    });
+  it('should provide the ability to delete an article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.createArticle(article.title, article.description, article.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
+
+        cy.visit(`/article/${slug}`);
+        cy.contains('button', ' Delete Article')
+          .eq(0)
+          .click();
+      });
+
     cy.get('.article-preview')
       .should('contain', 'No articles are here... yet.');
   });
