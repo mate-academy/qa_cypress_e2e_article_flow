@@ -23,7 +23,7 @@ describe('Article creation and deletion', () => {
     cy.contains('button', 'Publish Article').click();
 
     cy.get('h1').should('contain', article.title);
-    cy.get('.col-md-12').should('contain', article.body);
+    cy.get('.row.article-content').should('contain', article.body);
     cy.get('.tag-default').should('contain', article.tag);
   });
 
