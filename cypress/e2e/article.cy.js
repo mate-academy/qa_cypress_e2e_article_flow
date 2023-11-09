@@ -10,7 +10,7 @@ describe('Article', () => {
       article = generateArticle;
     });
   });
-  it('should be created with new article form', () => {
+  it('should be created by new article form', () => {
     cy.login(user.email, user.username, user.password);
 
     cy.visit('/editor');
@@ -34,7 +34,7 @@ describe('Article', () => {
       .contains('Delete Article')
       .should('be.visible');
   });
-  it('should be deleted with delete button', () => {
+  it('should be deleted by delete button', () => {
     cy.login(user.email, user.username, user.password);
 
     cy.createArticle(article.title, article.description, article.body)
