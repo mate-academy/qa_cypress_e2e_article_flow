@@ -27,14 +27,15 @@
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
-      email,
       username,
+      email,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage:
+       'https://static.productionready.io/images/smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
