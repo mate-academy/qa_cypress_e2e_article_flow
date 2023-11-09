@@ -13,15 +13,12 @@ describe('Article Creation and Deletion', () => {
     });
   });
 
-  after(() => {
-
-  });
-
   it('Sign in and Create an Article', () => {
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         cy.visit(`/article/${response.body.article.slug}`);
       });
+
     cy.get('.banner').should('contain', article.title);
     cy.get('.article-content').should('contain', article.body);
     cy.contains('.btn', 'Edit Article').should('be.visible');
