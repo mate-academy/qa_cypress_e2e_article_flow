@@ -1,6 +1,6 @@
 /// <reference types='cypress' />
 
-describe('Article', () => {
+describe('Conduit Article page', () => {
   let user = '';
   let article = '';
 
