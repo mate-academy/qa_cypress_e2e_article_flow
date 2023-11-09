@@ -45,6 +45,11 @@ describe('', () => {
     cy.get('.btn.btn-outline-danger.btn-sm')
       .eq(0)
       .click();
+
+    cy.on('window:confirm', (str) => {
+      expect(str).to.equal('Do you really want to delete it?');
+    });
+
     cy.url().should('equal', 'https://conduit.mate.academy/');
   });
 });
