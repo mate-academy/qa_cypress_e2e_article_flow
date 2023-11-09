@@ -6,16 +6,16 @@ describe('Article', () => {
 
   beforeEach(() => {
     cy.visit('/');
-    cy.task('generateArticle').then((generateArticle) => {
-      article = generateArticle;
-    });
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
-      cy.login(user.email, user.username, user.password);
+    });
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
     });
   });
 
   it('should provide an ability to create an article', () => {
+    cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         cy.visit(`/article/${response.body.article.slug}`);
@@ -25,13 +25,14 @@ describe('Article', () => {
       .should('contain', article.title);
     cy.get('.article-content')
       .should('contain', article.body);
-    cy.get('article-meta')
+    cy.get('.btn')
       .should('contain', 'Edit Article');
-    cy.get('article-meta')
+    cy.get('.btn')
       .should('contain', 'Delete Article');
   });
 
   it('should provide an ability to delete an article', () => {
+    cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         cy.visit(`/article/${response.body.article.slug}`);
