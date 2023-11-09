@@ -50,6 +50,7 @@ describe('Create and delete article', () => {
         cy.on('window:confirm', (alert) => {
           expect(alert).to.equal('Do you really want to delete it?');
         });
+        cy.url().should('equal', 'https://conduit.mate.academy/');
       });
   });
 });
