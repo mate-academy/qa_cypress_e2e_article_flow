@@ -66,3 +66,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
     });
   });
 });
+
+Cypress.Commands.add('findPlaceholder', placeholder => {
+  cy.get(`[placeholder="${placeholder}"]`);
+});
