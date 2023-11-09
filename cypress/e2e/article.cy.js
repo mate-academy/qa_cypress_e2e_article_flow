@@ -1,6 +1,6 @@
 /// <reference types='cypress' />
 
-describe('', () => {
+describe('Article creation and deleting', () => {
   let user;
   let article;
 
