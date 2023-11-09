@@ -13,7 +13,7 @@ describe('Article Creation and Deletion', () => {
     });
   });
 
-  it('Sign in and Create an Article', () => {
+  it('should sign in and create a new article', () => {
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         cy.visit(`/article/${response.body.article.slug}`);
@@ -25,7 +25,7 @@ describe('Article Creation and Deletion', () => {
     cy.contains('.btn', 'Delete Article').should('be.visible');
   });
 
-  it('Delete an Article', () => {
+  it('should delete an article after confirming the deletion', () => {
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         cy.visit(`/article/${response.body.article.slug}`);
