@@ -63,6 +63,6 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
-    });
+    })
   });
 });
