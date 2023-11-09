@@ -24,12 +24,18 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
+const faker = require("faker");
+
+Cypress.Commands.add("findByPlaceholder", (placeholder) => {
+  cy.get(`[placeholder^="${placeholder}"]`);
+});
+
+Cypress.Commands.add('login', (email, password, username) => {
   cy.request('POST', '/api/users', {
     user: {
-      email,
-      username,
-      password
+      email: email,
+      password: password,
+      username: username
     }
   }).then(response => {
     const user = {
@@ -46,23 +52,29 @@ Cypress.Commands.add('login', (email, username, password) => {
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
+  cy.request('POST', '/users', {
+    email:faker.internet.email(),
+    username: faker.name.firstName(),
+    password: 'Qwer1232'
+  }).then(response => {
+    cy.setCookie('drash_sess', response.body.user.token);
+  })
+  
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
+    cy.request('POST', '/api/articles', {
       body: {
         article: {
-          title,
-          description,
-          body,
-          tagList: []
-        }
-      },
+          title: title,
+          description: description,
+          body: body,
+          tagList: [],
+          }
+        },
       headers: {
         Authorization: `Token ${authToken}`
-      }
-    });
+      },
+    })
   });
 });
