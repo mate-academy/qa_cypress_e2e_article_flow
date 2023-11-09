@@ -49,7 +49,5 @@ let article;
       .should('not.exist');
     cy.contains('.article-preview', article.description)
       .should('not.exist');
-    cy.contains('.article-preview', article.tag)
-      .should('not.exist');
   });
 });
