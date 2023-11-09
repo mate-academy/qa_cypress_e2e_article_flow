@@ -49,7 +49,14 @@ describe('Article', () => {
         cy.on('window:confirm', (str) => {
           expect(str).to.equal('Do you really want to delete it?');
         });
-        cy.url().should('equal', 'https://conduit.mate.academy/');
+        cy.url()
+          .should('equal', 'https://conduit.mate.academy/');
+        cy.get('.col-md-9')
+          .should('contain', 'No articles are here... yet.');
+        cy.get('.col-md-9')
+          .should('not.contain', article.title);
+      });
+        
       });
   });
 });
