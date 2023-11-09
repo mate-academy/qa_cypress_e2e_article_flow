@@ -1,4 +1,4 @@
-describe('', () => {
+describe('should provide the ability to work with article', () => {
   let user;
   let article;
 
@@ -11,14 +11,14 @@ describe('', () => {
     });
   });
 
-  it('should be creating new article', () => {
+  it('should provide the ability to create an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
 
     cy.get('[placeholder="Article Title"]')
       .type(article.title);
     cy.get('[placeholder="What\'s this article about?"]')
-      .type(article.desription);
+      .type(article.description);
     cy.get('[placeholder="Write your article (in markdown)"]')
       .type(article.body);
     cy.get('.btn')
@@ -37,10 +37,10 @@ describe('', () => {
       .should('be.visible');
   });
 
-  it('should be delete article', () => {
+  it('should provide the ability to delete an article', () => {
     cy.login(user.email, user.username, user.password);
 
-    cy.createArticle(article.title, article.desription, article.body)
+    cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         const slug = response.body.article.slug;
         cy.visit(`article/${slug}`);
