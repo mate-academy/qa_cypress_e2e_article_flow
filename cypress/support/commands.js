@@ -31,9 +31,10 @@ Cypress.Commands.add('login', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
+      // eslint-disable-next-line max-len
       effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
@@ -48,7 +49,7 @@ Cypress.Commands.add('login', (email, username, password) => {
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
-
+    
     cy.request({
       method: 'POST',
       url: '/api/articles',
