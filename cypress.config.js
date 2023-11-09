@@ -1,9 +1,9 @@
-const { defineConfig } = require("cypress");
+const { defineConfig } = require('cypress');
 const faker = require('faker');
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'https://conduit.mate.academy/',
+    baseUrl: 'https://conduit.mate.academy',
     setupNodeEvents(on, config) {
       on('task', {
         generateUser() {
@@ -14,6 +14,16 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
+        }
+      });
+      on('task', {
+        generateArticle() {
+          return{
+            title: faker.random.words(4),
+            description: faker.random.words(8),
+            body: faker.random.words(20),
+            tag: faker.random.words(1)
+          }
         }
       });
     }
