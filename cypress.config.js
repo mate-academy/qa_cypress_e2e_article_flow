@@ -12,8 +12,14 @@ module.exports = defineConfig({
           return {
             username: faker.name.firstName() + randomNumber,
             email: email.toLowerCase(),
-            password: '12345Qwert!'
+            password: 'Irynasep23'
           };
+        }, generateArticle(){
+            return{
+              title: faker.random.word(),
+              description: faker.random.words(),
+              body: faker.random.words()
+          }
         }
       });
     }
