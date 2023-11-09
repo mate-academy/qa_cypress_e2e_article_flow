@@ -45,6 +45,7 @@ Cypress.Commands.add('login', (email, username, password) => {
     cy.setCookie('auth', response.body.user.token);
   });
 });
+
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
@@ -64,8 +65,4 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
-});
-
-Cypress.Commands.add('findByPlaceholder', (placeholder) => {
-  cy.get(`[placeholder^="${placeholder}"]`);
 });
