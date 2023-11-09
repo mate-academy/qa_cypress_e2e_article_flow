@@ -1,4 +1,4 @@
-describe('', () => {
+describe('Article flow', () => {
   let article;
   let postedArticleUrl;
   beforeEach(() => {
