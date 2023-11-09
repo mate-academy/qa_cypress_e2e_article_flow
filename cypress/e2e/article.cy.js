@@ -12,7 +12,7 @@ describe('Article flow', () => {
     });
   });
 
-  it('Create article', () => {
+  it('should provide an ability to create the article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     cy.get('[placeholder="Article Title"]')
@@ -25,13 +25,14 @@ describe('Article flow', () => {
       .click();
   });
 
-  it('Delete article', () => {
+  it('should provide an ability to delete the article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     // eslint-disable-next-line max-len
-    cy.createArticle(article.title, article.description, article.body).then((response) => {
-      cy.visit(`article/${response.body.article.slug}`);
-    });
+    cy.createArticle(article.title, article.description, article.body)
+      .then((response) => {
+        cy.visit(`article/${response.body.article.slug}`);
+      });
     cy.contains('Delete Article')
       .click();
     // eslint-disable-next-line max-len
