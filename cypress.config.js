@@ -7,22 +7,22 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       on('task', {
         generateUser() {
-          const email= faker.internet.email();
+          const email = faker.internet.email();
           const randomNumber = Math.floor(Math.random() * 1000);
           return {
             username: faker.name.firstName() + randomNumber,
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
-        },
+        }
       });
-        on('task', {
+      on('task', {
         generateArticle() {
           return {
             title: faker.lorem.word(),
             description: faker.lorem.word(),
             body: faker.lorem.paragraph(),
-            tag: faker.lorem.word(),
+            tag: faker.lorem.word()
           };
         }
       });
