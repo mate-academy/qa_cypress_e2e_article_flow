@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 const faker = require('faker');
 
-describe('Article page', () => {
+describe('Article page deleting and creating', () => {
   let article;
   const deleteAlert = 'Do you really want to delete it?';
   beforeEach(() => {
@@ -41,6 +41,12 @@ describe('Article page', () => {
         cy.on('window:alert', (alert) => {
           expect('alert').to.equal(deleteAlert);
         });
+        cy.contains('.link.nav-link', 'Global Feed')
+          .click();
+        cy.contains('.article-preview', article.title)
+          .should('not.exist');
+        cy.contains('.article-preview', article.description)
+          .should('not.exist');
       });
     cy.url()
       .should('eq', 'https://conduit.mate.academy/')
