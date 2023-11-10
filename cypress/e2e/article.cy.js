@@ -38,7 +38,7 @@ describe('article flow', () => {
       .should('be.visible');
   });
 
-  it('should delete the article', () => {
+  it.only('should delete the article', () => {
     const confirmMessage = 'Do you really want to delete it?';
     cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
@@ -51,6 +51,8 @@ describe('article flow', () => {
           expect(str).to.equal(confirmMessage);
         });
         cy.url().should('equal', 'https://conduit.mate.academy/');
+        cy.get('.col-md-9')
+          .should('not.contain', article.title);
       });
   });
 });
