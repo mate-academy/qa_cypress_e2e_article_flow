@@ -12,7 +12,7 @@ describe('Article creation and deletion', () => {
     });
   });
 
-  it('should provide the ability to create an article', () => {
+  it('Should provide the ability to create an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     cy.getByPlaceholder('Article Title').type(article.title);
