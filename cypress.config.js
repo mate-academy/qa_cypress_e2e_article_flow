@@ -18,8 +18,8 @@ module.exports = defineConfig({
         generateArticle() {
           return {
             title: faker.lorem.word(),
-            description: faker.lorem.word(),
-            text: faker.lorem.word()
+            description: faker.lorem.sentence(),
+            text: faker.lorem.sentence()
           };
         }
       });
