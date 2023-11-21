@@ -9,11 +9,12 @@ describe('Article creation and deletion', () => {
     });
     cy.task('generateArticle').then((generateArticle) => {
       article = generateArticle;
+      cy.login(user.email, user.username, user.password);
     });
+  
   });
 
   it('Should provide the ability to create an article', () => {
-    cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     cy.getByPlaceholder('Article Title').type(article.title);
     cy.getByPlaceholder('What\'s this article about?')
@@ -28,7 +29,6 @@ describe('Article creation and deletion', () => {
   });
 
   it('should provide the ability to delete an article', () => {
-    cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         const slug = response.body.article.slug;
