@@ -21,7 +21,7 @@ describe('Create and delete article', () => {
     cy.findByPlaceholder(`What's this article about?`).type(article.description);
     cy.findByPlaceholder(`Write your article (in markdown)`).type(article.body);
     cy.contains('.btn', 'Publish').click();
-    cy.get('h1').should('contain', article.title);
+    cy.get('h1').should('contains.text', article.title);
     cy.get('.col-md-12').should('exist', article.body);
   });
 
@@ -30,12 +30,12 @@ describe('Create and delete article', () => {
     cy.createArticle(article.title, article.description, article.body)
       .then((slug) => {
         cy.visit(`article/${slug}`);
-        cy.get('h1').should('contain', article.title);
+        cy.get('h1').should('contains.text', article.title);
         cy.get('.col-md-12').should('exist', article.body);
         cy.contains('.btn', 'Delete Article').click();
         cy.url().should('equal', Cypress.config().baseUrl);
         cy.get('.article-preview')
-          .should('contain', 'No articles are here... yet.');
+          .should('contains.text', 'No articles are here... yet.');
       });
   });
 });
