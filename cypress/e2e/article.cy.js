@@ -29,7 +29,7 @@ describe('Conduit Article Flow', () => {
     cy.get('[placeholder="Write a comment..."').should('be.visible');
   });
 
-  it.only('Deleting created article', () => {
+  it('Deleting created article', () => {
         //Loging in 
     cy.visit('user/login');
     cy.login(user.email, user.username, user.password);
