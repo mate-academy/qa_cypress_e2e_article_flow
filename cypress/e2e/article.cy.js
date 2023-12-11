@@ -5,7 +5,7 @@ const { LoremModule } = require("@faker-js/faker");
 describe('Conduit Article Flow', () => {
   let user;
 
-  before(() => {
+  beforeEach(() => {
     cy.task('generateUser').then(generatedUser => {
       user = generatedUser;
     });

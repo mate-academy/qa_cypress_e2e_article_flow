@@ -17,6 +17,9 @@ module.exports = defineConfig({
             articleBio: faker.lorem.word(5),
             articleContent: faker.lorem.words(15),
             articleTags: `#${faker.lorem.words(1)} #${faker.lorem.words(1)} {enter}`,
+            title: faker.lorem.words(2),
+            description: faker.lorem.word(5),
+            body: faker.lorem.words(15),
           };
         }
       });
