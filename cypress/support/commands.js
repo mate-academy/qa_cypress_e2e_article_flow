@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -31,7 +32,7 @@ Cypress.Commands.add('login', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
       effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
@@ -60,6 +61,20 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           tagList: []
         }
       },
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
+    });
+  });
+});
+
+Cypress.Commands.add('deleteArticle', (slug) => {
+  cy.getCookie('auth').then((token) => {
+    const authToken = token.value;
+
+    cy.request({
+      method: 'DELETE',
+      url: '/api/articles/' + slug,
       headers: {
         Authorization: `Token ${authToken}`
       }
