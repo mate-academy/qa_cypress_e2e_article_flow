@@ -19,14 +19,14 @@ describe('Create the article', () => {
     const userArticle = article();
     cy.createArticle(userArticle.title,
       userArticle.description, userArticle.body);
-    cy.get(':nth-child(4) > .nav-link').click();
-    cy.get('div.article-preview').get('.preview-link > h1 ')
+    cy.get('.nav-item').get('a').get('[href^="/profile"]').click();
+    cy.get('.article-preview').get('.preview-link').get('h1')
       .should('have.text', `${userArticle.title}`);
     cy.get('.container').get('.navbar-brand')
       .contains('conduit').click();
-    cy.get('.nav > :nth-child(2) > .link').click();
+    cy.get('.nav-item').get('a').contains('Global Feed').click();
     cy.get('.row').get('.col-md-9').get('.article-preview')
-      .get('.preview-link > h1').should('contain', `${userArticle.title}`);
+      .get('.preview-link').get('h1').should('contain', `${userArticle.title}`);
   });
 
   it('The user is able to delete his article', () => {
@@ -34,15 +34,15 @@ describe('Create the article', () => {
     const userArticle = article();
     cy.createArticle(userArticle.title, userArticle.description,
       userArticle.body);
-    cy.get(':nth-child(4) > .nav-link').click();
-    cy.get('div.article-preview').get('.preview-link > h1').click();
+    cy.get('.nav-item').get('a').get('[href^="/profile"]').click();
+    cy.get('.article-preview').get('.preview-link').get('h1').click();
     cy.get('button').contains('Delete Article').click();
     cy.on('window:confirm', (str) => {
       expect(str).to.equal(`Do you really want to delete it?`);
     });
     cy.url().should('contain', 'https://conduit.mate.academy/');
-    cy.get('.nav > :nth-child(2) > .link').click();
+    cy.get('.nav-item').get('a').contains('Global Feed').click();
     cy.get('.row').get('.col-md-9').get('.article-preview')
-      .get('.preview-link > h1').should('not.contain', `${userArticle.title}`);
+      .get('.preview-link').get('h1').should('not.contain', `${userArticle.title}`);
   });
 });
