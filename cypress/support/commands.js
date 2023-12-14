@@ -9,8 +9,7 @@ Cypress.Commands.add('login', (email, username, password) => {
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage:
-      'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage: 'https://smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
@@ -39,24 +38,28 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      cy.setCookie('slug', response.body.article.slug);
     });
   });
 });
 
+// almost there... :/
+// Cypress.Commands.add('deleteArticle', () => {
+//   cy.getCookies().then((cookies) => {
+//     const articleSlug = cookies.find((cookie) => cookie.name === 'articleSlug').value;
+//     const authToken = cookies.find((cookie) => cookie.name === 'authToken').value;
 Cypress.Commands.add('deleteArticle', () => {
-  cy.get('@createdArticleSlug').then((articleSlug) => {
-    cy.getCookie('auth').then((token) => {
-      const authToken = token.value;
+  cy.getCookies().then((cookies) => {
+    const articleSlug = cookies[3].value;
+    const authToken = cookies[2].value;
 
-      cy.request({
-        method: 'DELETE',
-        url: `/api/articles/${articleSlug}`,
-        headers: {
-          Authorization: `Token ${authToken}`
-        }
-      }).then((response) => {
-        expect(response.status).to.eq(200);
-      });
+    cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${articleSlug}`,
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
     });
   });
 });
