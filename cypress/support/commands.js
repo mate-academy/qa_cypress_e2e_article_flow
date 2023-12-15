@@ -3,38 +3,15 @@
 // create various custom commands and overwrite
 // existing commands.
 //
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+// sign up better reflects what we do
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('signUp', (user2) => {
   cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then(response => {
+    user: user2
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage: 'https://smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
@@ -63,6 +40,30 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      cy.setCookie('slug', response.body.article.slug);
     });
   });
+});
+
+// this is not very elegant solution but dont have better idea for now
+// getcookies returns an array of cookies, and at ids of 2 and 3 are
+// auth token and article slug saved earlier
+Cypress.Commands.add('deleteArticle', () => {
+  cy.getCookies().then((cookies) => {
+    const articleSlug = cookies[3].value;
+    const authToken = cookies[2].value;
+
+    cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${articleSlug}`,
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
+    });
+  });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder = "${placeholder}"]`);
 });
