@@ -19,7 +19,8 @@ module.exports = defineConfig({
           return {
             title: faker.lorem.words(4),
             description: faker.lorem.lines(1),
-            body: faker.lorem.paragraph()
+            body: faker.lorem.paragraph(),
+            tag: faker.lorem.word()
           };
         }
       });

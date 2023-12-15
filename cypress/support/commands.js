@@ -5,13 +5,9 @@
 //
 // sign up better reflects what we do
 
-Cypress.Commands.add('signUp', (email, username, password) => {
+Cypress.Commands.add('signUp', (user2) => {
   cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
+    user: user2
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
@@ -66,4 +62,8 @@ Cypress.Commands.add('deleteArticle', () => {
       }
     });
   });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder = "${placeholder}"]`);
 });

@@ -1,9 +1,12 @@
 describe('Conduit article', () => {
   let article = {};
   let user = {};
+
   beforeEach(() => {
     cy.visit('https://conduit.mate.academy/');
     cy.task('generateUser').then((newUser) => {
+      cy.signUp(newUser);
+      cy.reload();
       user = newUser;
     });
     cy.task('generateArticle').then((newArticle) => {
@@ -12,11 +15,20 @@ describe('Conduit article', () => {
   });
 
   it('should be able to create a new article', () => {
-    cy.signUp(user.email, user.username, user.password);
-    cy.reload();
     cy.get('.navbar')
       .should('contain', user.username.toLowerCase());
-    cy.createArticle(article.title, article.description, article.body);
+    cy.contains('a', 'New Article')
+      .click();
+    cy.findByPlaceholder('Article Title')
+      .type(article.title);
+    cy.findByPlaceholder(`What's this article about?`)
+      .type(article.description);
+    cy.findByPlaceholder('Write your article (in markdown)')
+      .type(article.body);
+    cy.findByPlaceholder('Enter tags')
+      .type(`${article.tag}{enter}`);
+    cy.contains('button', 'Publish Article')
+      .click();
     cy.contains('a', user.username.toLowerCase())
       .click();
     cy.reload();
@@ -26,8 +38,6 @@ describe('Conduit article', () => {
       .should('contain', article.description);
   });
   it('should create an article and delete it', () => {
-    cy.signUp(user.email, user.username, user.password);
-    cy.reload();
     cy.get('.navbar')
       .should('contain', user.username.toLowerCase());
     cy.createArticle(article.title, article.description, article.body);
