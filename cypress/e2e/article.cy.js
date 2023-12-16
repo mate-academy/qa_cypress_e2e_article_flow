@@ -1,44 +1,33 @@
 /// <reference types="cypress" />
 
-const { faker } = require('@faker-js/faker');
+let user;
+let article;
 
 describe('article', () => {
   beforeEach(() => {
     cy.visit('user/register');
-  });
-
-  it('should create an article', () => {
-    const randomNumber = Math.random().toString().slice(2, 10);
-    const user = {
-      username: faker.lorem.word() + randomNumber,
-      email: faker.internet.email(),
-      password: faker.internet.password()
-    };
-    const article = {
-      title: faker.lorem.word(),
-      description: faker.lorem.words(3),
-      body: faker.lorem.words(10)
-    };
-    cy.login(user.email, user.username, user.password);
-    cy.createArticle(article.title, article.description, article.body)
-      .as('article');
-    cy.get('@article').should((resp) => {
-      expect(resp.status).to.eq(200);
+    cy.task('generateUser').then((newUser) => {
+      user = newUser;
+    });
+    cy.task('generateArticle').then((newArticle) => {
+      article = newArticle;
     });
   });
 
+  it('should create an article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.visit('/editor');
+    cy.get('[placeholder="Article Title"]').type(article.title);
+    cy.get('[placeholder="What\'s this article about?"]')
+      .type(article.description);
+    cy.get('[placeholder="Write your article (in markdown)"]')
+      .type(article.body);
+    cy.get('[type="button"]').contains('Publish Article').click();
+    cy.get('.nav-link').contains(user.username).click();
+    cy.get('h1').contains(article.title).should('be.visible');
+  });
+
   it('should delete the created article', () => {
-    const randomNumber = Math.random().toString().slice(2, 10);
-    const user = {
-      username: faker.lorem.word() + randomNumber,
-      email: faker.internet.email(),
-      password: faker.internet.password()
-    };
-    const article = {
-      title: faker.lorem.word(),
-      description: faker.lorem.words(3),
-      body: faker.lorem.words(10)
-    };
     cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
       .then((resp) => {
@@ -61,9 +50,8 @@ describe('article', () => {
             }
           });
         });
-      }).as('delete');
-    cy.get('@delete').should((resp) => {
-      expect(resp.status).to.eq(204);
-    });
+      }).then((article) => {
+        cy.get(article).should('not.be.visible');
+      });
   });
 });
