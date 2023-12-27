@@ -2,7 +2,7 @@ describe('Conduit article', () => {
   let user;
   let article;
 
-  before(() => {
+  beforeEach(() => {
     cy.task('generateUser').then((generatedUser) => {
       user = generatedUser;
     });
@@ -13,6 +13,17 @@ describe('Conduit article', () => {
   });
 
   it('should create an article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.visit('/editor');
+    cy.get('[placeholder="Article Title"]').type(article.title);
+    cy.get(`[placeholder="What's this article about?"]`).type(article.description);
+    cy.get('[placeholder="Write your article (in markdown)"]').type(article.body);
+    cy.get('button').contains('Publish Article').click();
+    cy.get('a').contains('Edit Article').should('contain', 'Edit Article');
+
+  });
+
+  it('should delete an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body);
     cy.visit('profile/' + (user.username).toLowerCase());
