@@ -31,10 +31,11 @@ Cypress.Commands.add('login', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage:
+        'https://static.productionready.io/images/smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
@@ -43,6 +44,10 @@ Cypress.Commands.add('login', (email, username, password) => {
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
+});
+
+Cypress.Commands.add('findByPlaceHolder', (placeHolder) => {
+  cy.get(`[placeholder='${placeHolder}']`);
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
