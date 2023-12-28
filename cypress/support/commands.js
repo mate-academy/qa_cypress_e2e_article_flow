@@ -1,28 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
@@ -31,10 +6,10 @@ Cypress.Commands.add('login', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage: 'https://smiley-cyrus.jpg',
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
@@ -60,6 +35,28 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           tagList: []
         }
       },
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
+    }).then((response) => {
+      cy.setCookie('slug', response.body.article.slug);
+    });
+  });
+});
+
+// almost there... :/
+// Cypress.Commands.add('deleteArticle', () => {
+//   cy.getCookies().then((cookies) => {
+//     const articleSlug = cookies.find((cookie) => cookie.name === 'articleSlug').value;
+//     const authToken = cookies.find((cookie) => cookie.name === 'authToken').value;
+Cypress.Commands.add('deleteArticle', () => {
+  cy.getCookies().then((cookies) => {
+    const articleSlug = cookies[3].value;
+    const authToken = cookies[2].value;
+
+    cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${articleSlug}`,
       headers: {
         Authorization: `Token ${authToken}`
       }
