@@ -24,8 +24,18 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (user) => {
+Cypress.Commands.add('register', (user) => {
   cy.request('POST', '/api/users', {
+    user: {
+      email: user.email,
+      username: user.username,
+      password: user.password
+    }
+  });
+});
+
+Cypress.Commands.add('login', (user) => {
+  cy.request('POST', '/api/users/login', {
     user: {
       email: user.email,
       username: user.username,
@@ -92,4 +102,7 @@ Cypress.Commands.add('deleteArticle', (article) => {
       expect(response.status).to.eq(204);
     });
   });
+});
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
 });
