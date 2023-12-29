@@ -64,6 +64,10 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      cy.visit('https://conduit.mate.academy/article/' + response.body.article.slug);
+      cy.get('h1').should('contain', response.body.article.title);
     });
   });
 });
@@ -78,6 +82,42 @@ Cypress.Commands.add('deleteArticle', (slug) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      expect(response.status).to.eq(204);
+    });
+  });
+});
+
+Cypress.Commands.add('deleteArticle', (title, description, body) => {
+  cy.getCookie('auth').then((token) => {
+    const authToken = token.value;
+
+    cy.request({
+      method: 'POST',
+      url: '/api/articles',
+      body: {
+        article: {
+          title,
+          description,
+          body,
+          tagList: []
+        }
+      },
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
+    }).then((response) => {
+      cy.request({
+        method: 'DELETE',
+        url: '/api/articles/' + response.body.article.slug,
+        headers: {
+          Authorization: `Token ${authToken}`
+        }
+      }).then((response2) => {
+        expect(response2.status).to.eq(204);
+        cy.visit('https://conduit.mate.academy/article/' + response.body.article.slug, { failOnStatusCode: false });
+        cy.get('h1').should('contain', 404);
+      });
     });
   });
 });
