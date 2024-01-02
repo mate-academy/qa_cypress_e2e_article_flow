@@ -23,9 +23,25 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+const { generateUser } = require("../support/genUser");
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+Cypress.Commands.add('register', () => {
+  const {username, email, password} = generateUser()
+  cy.request('POST', 'api/users', {
+    user: {
+      email,
+      username,
+      password
+    }
+  }).then(response => ({
+    ...response.body.user,
+    password
+  }));
+});
+
+
+Cypress.Commands.add('login', ({ username, email, password }) => {
+  cy.request('POST', 'api/users/login', {
     user: {
       email,
       username,
@@ -63,6 +79,9 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
-    });
+    }).then(response => {
+      const { slug, author: { username } } = response.body.article;
+      return { slug, username };
+    })
   });
 });
