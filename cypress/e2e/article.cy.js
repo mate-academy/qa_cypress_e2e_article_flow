@@ -3,12 +3,10 @@ const { generateAticle } = require('../support/genArticle');
 describe('test for article flow', () => {
   
   beforeEach(() => {
-    cy.register().then(({username,email,password}) => {
-      cy.login({ username, email, password });
-    });
+    cy.register();
   });
 
-  it.only('should be able to create a new article', () => {
+  it('should be able to create a new article', () => {
     const {title, description, body} = generateAticle();
     cy.visit('editor')
     cy.get('input[placeholder="Article Title"]')
@@ -24,13 +22,20 @@ describe('test for article flow', () => {
 
   it('should be able to delete article', () => {
     const {title, description, body} = generateAticle();
-    cy.createArticle(title, description, body).then(({slug,username }) => {
-      cy.visit(`/article/${slug}`)
-      cy.contains('button.btn.btn-outline-danger.btn-sm', 'Delete Article').click()
-      cy.visit(`profile/${username}`)
-      cy.get('.article-preview').should('contain.text', 'No articles are here... yet.')
-
+    cy.createArticle(title, description, body).then(({slug}) => {
+      cy.intercept('DELETE', `/api/articles/${slug}`).as('deleteArticle');
+      cy.visit(`/article/${slug}`);
+      cy.contains('button.btn.btn-outline-danger.btn-sm', 'Delete Article')
+        .click();
+        cy.on('window:alert', (text) => {
+          expect(text).should('contain.text', 'Do you really want to delete it?')
+            return true;
+        });  
+      cy.wait('@deleteArticle', { timeout: 10000 })
+        .its('response.statusCode') 
+        .should('eq', 204);
     });
+    
   });
 
   });

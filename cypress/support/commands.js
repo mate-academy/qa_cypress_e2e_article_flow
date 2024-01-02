@@ -33,20 +33,6 @@ Cypress.Commands.add('register', () => {
       username,
       password
     }
-  }).then(response => ({
-    ...response.body.user,
-    password
-  }));
-});
-
-
-Cypress.Commands.add('login', ({ username, email, password }) => {
-  cy.request('POST', 'api/users/login', {
-    user: {
-      email,
-      username,
-      password
-    }
   }).then(response => {
     const user = {
       bio: response.body.user.bio,
