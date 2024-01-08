@@ -23,10 +23,23 @@ Cypress.Commands.add('login', (email, username, password) => {
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.visit('/editor');
-  cy.get('[placeholder="Article Title"]').type(title);
-  cy.get('[placeholder="What\'s this article about?"]').type(description);
-  cy.get('[placeholder="Write your article (in markdown)"]').type(body);
-  cy.get('[type="button"]').contains('Publish').click();
-  cy.get('.article-page').should('exist');
+  cy.getCookie('auth').then((token) => {
+    const authToken = token.value;
+
+    cy.request({
+      method: 'POST',
+      url: '/api/articles',
+      body: {
+        article: {
+          title,
+          description,
+          body,
+          tagList: []
+        }
+      },
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
+    });
+  });
 });
