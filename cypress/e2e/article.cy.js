@@ -20,13 +20,11 @@ describe('Article page', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
 
-    // cy.findByPlaceholder('Article Title').type(article.title);
-    // cy.findByPlaceholder('What\'s this article about?').type(article.description);
-    // cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
-    // cy.get('[type="button"]').contains('Publish Article').click();
-    cy.createArticle(article.title, article.description, article.body);
-    cy.get('[alt="your profile image"]').click();
-    cy.get('.article-preview').should('contain', article.title);
+    cy.findByPlaceholder('Article Title').type(article.title);
+    cy.findByPlaceholder('What\'s this article about?').type(article.description);
+    cy.findByPlaceholder('Write your article (in markdown)').type(article.body);
+    cy.get('[type="button"]').contains('Publish Article').click();
+    cy.get('.banner').should('contain', article.title);
 
   });
 
