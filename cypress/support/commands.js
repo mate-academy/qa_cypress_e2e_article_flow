@@ -23,7 +23,6 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-const faker = require('faker');
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
@@ -55,9 +54,9 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       url: '/api/articles',
       body: {
         article: {
-          title: faker.random.word(),
-          description: faker.random.words(),
-          body: faker.random.words(),
+          title,
+          description,
+          body,
           tagList: []
         }
       },
