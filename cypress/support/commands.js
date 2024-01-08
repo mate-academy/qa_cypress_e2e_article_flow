@@ -24,12 +24,17 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+const faker = require('faker');
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
+});
+
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  cy.request('POST', '/api/users/login', {
     user: {
-      email,
-      username,
-      password
+      email: 'test@test1.com',
+      password: '1234567#'
     }
   }).then(response => {
     const user = {
@@ -54,10 +59,10 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       url: '/api/articles',
       body: {
         article: {
-          title,
-          description,
-          body,
-          tagList: []
+          title: faker.lorem.word(),
+          description: faker.lorem.words(),
+          body:  faker.lorem.words(),
+          tagList: [faker.lorem.word]
         }
       },
       headers: {
