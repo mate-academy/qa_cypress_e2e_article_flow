@@ -16,6 +16,18 @@ module.exports = defineConfig({
           };
         }
       });
+
+      on('task', {
+        createArticle() {
+          const randomNumber = Math.floor(Math.random(1000) * 1000);
+          return {
+            title: faker.lorem.words(),
+            description: faker.lorem.lines(),
+            articleBody: faker.lorem.lines(5) + randomNumber,
+            tag: faker.lorem.words(1)
+          };
+        }
+      });
     }
   }
 });

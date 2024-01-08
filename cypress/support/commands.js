@@ -24,12 +24,11 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+Cypress.Commands.add('login', (email, password) => {
+  cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
     user: {
-      email,
-      username,
-      password
+      email: 'leia@test.qa',
+      password: 'Qwerty!1'
     }
   }).then(response => {
     const user = {
@@ -45,6 +44,8 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
+const faker = require('faker');
+
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
@@ -54,10 +55,10 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       url: '/api/articles',
       body: {
         article: {
-          title,
-          description,
-          body,
-          tagList: []
+          title: faker.lorem.words(),
+          description: faker.lorem.lines(),
+          body: faker.lorem.lines(5),
+          tagList: [faker.lorem.words(1)]
         }
       },
       headers: {
@@ -66,3 +67,14 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
     });
   });
 });
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
+});
+
+
+//Cypress.Commands.add('transformTextForCypress', (text) => {
+  //const transformedText = text.replace(/-/g, '_');
+  //return transformedText;
+//});
+
