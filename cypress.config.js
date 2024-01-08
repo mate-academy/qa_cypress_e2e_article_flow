@@ -1,4 +1,4 @@
-const { defineConfig } = require("cypress");
+const { defineConfig } = require('cypress');
 const faker = require('faker');
 
 module.exports = defineConfig({
@@ -14,7 +14,17 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
+        },
+
+        generateArticle() {
+          return {
+            title: faker.lorem.word(),
+            description: faker.lorem.words(),
+            body: faker.lorem.words(),
+            tags: faker.lorem.word()
+          };
         }
+
       });
     }
   }
