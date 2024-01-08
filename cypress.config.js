@@ -15,15 +15,6 @@ module.exports = defineConfig({
             password: '12345Qwert!'
           };
         },
-        createArticle() {
-          const randomNumber = Math.floor(Math.random() * 1000);
-          return {
-            title: faker.lorem.word() + randomNumber,
-            description: faker.lorem.words(),
-            body: faker.lorem.words(),
-            tags: faker.lorem.word()
-          };
-        },
         generateArticle() {
           const randomNumber = Math.floor(Math.random() * 1000);
           return {
