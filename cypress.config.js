@@ -1,7 +1,9 @@
-const { defineConfig } = require("cypress");
+const { defineConfig } = require('cypress');
 const faker = require('faker');
 
 module.exports = defineConfig({
+  viewportHeight: 1440,
+  viewportWidth: 1920,
   e2e: {
     baseUrl: 'https://conduit.mate.academy/',
     setupNodeEvents(on, config) {
