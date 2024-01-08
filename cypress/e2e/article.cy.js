@@ -1,13 +1,17 @@
+const faker = require('faker');
+
 describe('Article page', () => {
   let user;
-  let article;
+  const article = {
+    title: faker.random.word(),
+    description: faker.random.words(),
+    body: faker.random.words(),
+    tag: faker.random.word()
+  };
 
   beforeEach(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
-    });
-    cy.task('generateArticle').then((generateArticle) => {
-      article = generateArticle;
     });
   });
 
@@ -30,6 +34,7 @@ describe('Article page', () => {
 
   it('should allow to delete an article', () => {
     cy.login(user.email, user.username, user.password);
+
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         const slug = response.body.article.slug;
