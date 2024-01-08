@@ -1,12 +1,15 @@
 describe('Article flow', () => {
   let user;
   let article;
+  before(() => {
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
+    });
+  });
+
   beforeEach(() => {
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
-    });
-    cy.task('generateArticle').then((generateArticle) => {
-      article = generateArticle;
     });
   });
 
