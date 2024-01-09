@@ -29,7 +29,7 @@ describe('Article Creation Test', () => {
     cy.get('.btn').contains('Delete Article').should('be.visible');
   });
 
-    it.only('should provide to delete article', () => {
+    it('should provide to delete article', () => {
    cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
