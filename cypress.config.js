@@ -18,7 +18,7 @@ module.exports = defineConfig({
         generateArticle() {
           const word = faker.lorem.word();
           return {
-            title: word(),
+            title: word,
             description: faker.lorem.words(),
             body: faker.lorem.words(),
             tag: faker.lorem.word()
