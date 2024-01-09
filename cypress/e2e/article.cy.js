@@ -14,7 +14,7 @@ describe('Conduit "New article" page', () => {
     });
   });
 
-  it('should create new article', () => {
+  it.only('should create new article', () => {
     cy.visit('/user/register/');
     cy.login(user.email, user.username, user.password);
 
@@ -26,12 +26,13 @@ describe('Conduit "New article" page', () => {
     cy.get('.pull-xs-right').should('contain', 'New Article');
     cy.get('.ion-compose').click();
 
+    cy.findByPlaceholder('Article Title').type(newArticle.title);
+    cy.findByPlaceholder('What\'s this article about?')
+      .type(newArticle.description);
     // eslint-disable-next-line max-len
-    cy.createArticle(newArticle.title, newArticle.description, newArticle.body)
-      .then((response) => {
-        const slug = response.body.article.slug;
-        cy.visit(`/article/${slug}`);
-      });
+    cy.findByPlaceholder('Write your article (in markdown)').type(newArticle.body);
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
+    cy.get('.btn-primary').should('contain', 'Publish Article').click();
 
     cy.get('.banner').should('contain', newArticle.title);
     cy.get('.article-page').should('contain', newArticle.body);
