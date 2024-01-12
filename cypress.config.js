@@ -10,7 +10,7 @@ module.exports = defineConfig({
           const randomNumber = Math.ceil(Math.random() * 1000);
           return {
             username: faker.name.firstName() + `${randomNumber}`,
-            email: 'testNNNN' + `${randomNumber}` + '@gmail.com',
+            email: 'testbanana' + `${randomNumber}` + '@gmail.com',
             password: 'Qwert123!'
           };
         },

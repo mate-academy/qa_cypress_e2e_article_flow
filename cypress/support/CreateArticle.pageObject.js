@@ -1,7 +1,7 @@
 import { PageObject } from './PageObject';
 
 export class CreateArticlePageObject extends PageObject {
-  url = '/editor';
+  url = 'editor';
 
   get titleField() {
     return cy.findByPlaceholder('Article Title');
