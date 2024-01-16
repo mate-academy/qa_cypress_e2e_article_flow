@@ -39,17 +39,11 @@ describe('Article', () => {
   // eslint-disable-next-line max-len
   it('article should be deleted, after creating by createArticle method', () => {
     cy.login(user.email, user.username, user.password);
-
-    createArticlePage.visit();
-    createArticlePage.titleField.type(article.name);
-    cy.get(':nth-child(2) > .form-control')
-      .type(article.description);
-    createArticlePage.bodyField.type(article.body);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000);
-    createArticlePage.publishButton.click({ force: true });
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000);
+    cy.createArticle(article.name, article.description, article.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
+        cy.visit(`/article/${slug}`);
+      });
     cy.contains(' Delete Article')
       .click();
     cy.get('.article-preview')
