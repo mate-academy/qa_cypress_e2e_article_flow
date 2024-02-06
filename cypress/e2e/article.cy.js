@@ -14,12 +14,12 @@ describe('Create and delete article', () => {
   it('should create an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
-    cy.findByyPlaceholder('Article Title').type(article.title);
-    cy.findByyPlaceholder(`What's this article about?`)
+    cy.findByPlaceholder('Article Title').type(article.title);
+    cy.findByPlaceholder(`What's this article about?`)
       .type(article.description);
-    cy.findByyPlaceholder('Write your article (in markdown)')
+    cy.findByPlaceholder('Write your article (in markdown)')
       .type(article.body);
-    cy.findByyPlaceholder('Enter tags')
+    cy.findByPlaceholder('Enter tags')
       .type(article.tags);
     cy.contains('[type="button"]', 'Publish Article').click({ force: true });
     cy.get('[class="banner"]').should('contain', article.title);
