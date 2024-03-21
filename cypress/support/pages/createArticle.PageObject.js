@@ -4,15 +4,15 @@ export class CreateNewArticle extends PageObject {
   url = '/editor';
 
   get titleField() {
-    return cy.get('[placeholder="Article Title"]');
+    return cy.getByPlaceholder('Article Title');
   };
 
   get descriptionField() {
-    return cy.get('[placeholder^="What\'s this"]');
+    return cy.getByPlaceholder('What\'s this');
   };
 
   get articleBodyField() {
-    return cy.get('[placeholder^="Write your article"]');
+    return cy.getByPlaceholder('Write your article');
   };
 
   get publishArticleButton() {
