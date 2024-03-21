@@ -25,7 +25,7 @@ module.exports = {
     'cypress/no-force': 'warn',
     'cypress/no-async-tests': 'error',
     'cypress/no-pause': 'error',
-    'max-len': ['error', 80, {
+    'max-len': ['error', 85, {
       ignoreTemplateLiterals: true,
       ignoreRegExpLiterals: true,
       ignoreComments: true
