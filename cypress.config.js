@@ -3,7 +3,7 @@ const faker = require('faker');
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'https://conduit.mate.academy/',
+    baseUrl: 'https://conduit.mate.academy',
     setupNodeEvents(on, config) {
       on('task', {
         generateUser() {
@@ -14,7 +14,15 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
-        }
+        },
+        newArticle() {
+          return {
+            title: faker.lorem.word(),
+            description: faker.lorem.words(),
+            body: faker.lorem.words(),
+            tag: faker.lorem.word()
+          };
+        },
       });
     }
   }
