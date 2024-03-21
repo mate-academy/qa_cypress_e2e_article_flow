@@ -5,7 +5,7 @@ import { DeleteArticle } from '../support/pages/deleteArticle.PageObject';
 const createArticle = new CreateNewArticle();
 const deleteArticle = new DeleteArticle();
 
-describe('Article page', () => {
+describe('User', () => {
   let user;
   let articleData;
 
@@ -19,7 +19,7 @@ describe('Article page', () => {
     });
   });
 
-  it('should allow to create an article', () => {
+  it('is able to create an article', () => {
     cy.login(user.email, user.username, user.password);
     createArticle.visit();
     createArticle.titleField.type(articleData.title);
@@ -31,7 +31,7 @@ describe('Article page', () => {
     createArticle.assertArticleBodyOnArticlePage(articleData.body);
   });
 
-  it('should allow to delete an article', () => {
+  it('is able to delete an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.createArticle(articleData.title, articleData.description, articleData.body)
       .then((response) => {
