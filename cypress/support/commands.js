@@ -25,13 +25,13 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  cy.request('POST', 'https://conduit.mate.academy/api/users', {
     user: {
-      email,
-      username,
-      password
+      email: email,
+      username: username,
+      password: password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
       effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
@@ -51,12 +51,12 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
 
     cy.request({
       method: 'POST',
-      url: '/api/articles',
+      url: 'https://conduit.mate.academy/api/articles',
       body: {
         article: {
-          title,
-          description,
-          body,
+          title: title,
+          description: description,
+          body: body,
           tagList: []
         }
       },
@@ -66,3 +66,4 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
     });
   });
 });
+
