@@ -83,17 +83,15 @@ Cypress.Commands.add('checkArticle', (article, user) => {
 });
 
 Cypress.Commands.add('deleteArticle', (article, user) => {
-  const profileUrl = `/profile/${user.username.toLowerCase()}`;
-  cy.visit(profileUrl);
-
   cy.contains(article.title).click();
   cy.get('.ion-trash-a').first().click();
 });
 
-Cypress.Commands.add('checkArticleDeleted', (article, user) => {
-  const profileUrl = `/profile/${user.username.toLowerCase()}`;
-  cy.visit(profileUrl);
-
+Cypress.Commands.add('checkArticleDeleted', () => {
   cy.get('.article-preview')
     .should('contain.text', 'No articles are here... yet.');
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
 });
