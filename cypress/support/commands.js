@@ -24,12 +24,12 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('login', (userObject) => {
   cy.request('POST', '/api/users', {
     user: {
-      email,
-      username,
-      password
+      email: userObject.email,
+      username: userObject.username,
+      password: userObject.password
     }
   }).then(response => {
     const user = {
@@ -45,7 +45,7 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
+Cypress.Commands.add('createArticle', (articleObject) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
@@ -54,9 +54,9 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       url: '/api/articles',
       body: {
         article: {
-          title,
-          description,
-          body,
+          title: articleObject.title,
+          description: articleObject.description,
+          body: articleObject.body,
           tagList: []
         }
       },
@@ -65,4 +65,33 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('checkArticle', (article, user) => {
+  const profileUrl = `/profile/${user.username.toLowerCase()}`;
+  cy.visit(profileUrl);
+
+  cy.get('.preview-link')
+    .should('contain.text', article.title);
+  cy.get('.preview-link')
+    .should('contain.text', article.description);
+
+  cy.get('h1').click();
+
+  cy.get('[class="row article-content"]')
+    .should('contain.text', article.body);
+});
+
+Cypress.Commands.add('deleteArticle', (article, user) => {
+  cy.contains(article.title).click();
+  cy.get('.ion-trash-a').first().click();
+});
+
+Cypress.Commands.add('checkArticleDeleted', () => {
+  cy.get('.article-preview')
+    .should('contain.text', 'No articles are here... yet.');
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
 });
