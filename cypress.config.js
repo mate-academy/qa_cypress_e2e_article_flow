@@ -16,6 +16,16 @@ module.exports = defineConfig({
           };
         }
       });
+      on('task', {
+        generateArticle(){
+          const randomNumber = Math.floor(Math.random(1000) * 1000);
+          return {
+            title: faker.lorem.word(),
+            description: faker.lorem.words() + randomNumber,
+            body: faker.lorem.words() + randomNumber
+          }
+        }
+      })
     }
   }
 });
