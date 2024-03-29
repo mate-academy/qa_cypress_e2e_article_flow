@@ -1,6 +1,6 @@
 describe('This article test', () => {
   let fakeuser;
-  before(() => {
+  beforeEach(() => {
     cy.visit('https://conduit.mate.academy');
     cy.task('generateUser').then((generateUser) => {
       fakeuser = generateUser;
@@ -13,7 +13,7 @@ describe('This article test', () => {
     body: 'Everybody',
   };
 
-  it.skip('should create a new article', () => {
+  it('should create a new article', () => {
     cy.login(fakeuser.email, fakeuser.username, fakeuser.password);
     cy.visit('https://conduit.mate.academy');
     cy.get('[href="/editor"]').click();
@@ -40,28 +40,29 @@ describe('This article test', () => {
       });
   });
 
-  it.only('should delete an article', () => {
+  it('should delete an article', () => {
     cy.login(fakeuser.email, fakeuser.username, fakeuser.password);
     cy.visit('https://conduit.mate.academy');
-    cy.createArticle(article.title, article.description, article.body);
-    cy.visit('https://conduit.mate.academy');
-    cy.contains('a', 'Global Feed').click();
-    cy.intercept(
-      'GET',
-      'https://conduit.mate.academy/_next/data/prXNDmVQlPmg2o-RAU2Mw/article/*'
-    ).as('getArticle');
-    cy.contains('h1', article.title).click();
-    cy.wait('@getArticle').then((interception) => {
-      const articleSlug = interception.response.body?.slug;
-      cy.log(`Article Slug: ${articleSlug}`);
-      cy.contains('button', 'Delete Article').click();
-      cy.contains('.article-preview', 'No articles are here... yet.').should(
-        'be.visible'
-      );
-      cy.visit(`https://conduit.mate.academy/article/${articleSlug}`);
-      cy.intercept('/not-found', {
-        statusCode: 404,
-      }).should('exist');
+    cy.createArticle(article.title, article.description, article.body).then(
+      (response) => {
+        const article = {
+          slug: response.body.article.slug,
+        };
+        cy.log('Article slug: ', article.slug);
+        cy.visit(`https://conduit.mate.academy/article/${article.slug}`);
+      }
+    );
+
+    cy.contains('button', 'Delete Article').click();
+    cy.contains('.article-preview', 'No articles are here... yet.').should(
+      'be.visible'
+    );
+
+    cy.request({
+      url: `https://conduit.mate.academy/article/${article.slug}`,
+      failOnStatusCode: false,
+    }).then((resp) => {
+      expect(resp.status).to.eq(404);
     });
   });
 });
