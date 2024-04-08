@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
@@ -31,10 +33,10 @@ Cypress.Commands.add('login', (email, username, password) => {
       username,
       password
     }
-  }).then(response => {
+  }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      effectiveImage: imgUrl,
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
