@@ -25,7 +25,6 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
-
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
@@ -46,11 +45,9 @@ Cypress.Commands.add('login', (email, username, password) => {
     cy.setCookie('auth', response.body.user.token);
   });
 });
-
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
-
     cy.request({
       method: 'POST',
       url: '/api/articles',
@@ -65,6 +62,15 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      const createdArticle = {
+        slug: response.body.article.slug
+      };
+      cy.wrap(createdArticle).as('article');
     });
   });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder, tag = 'input') => {
+  cy.get(`${tag}[placeholder="${placeholder}"]`);
 });
