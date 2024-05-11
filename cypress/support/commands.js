@@ -71,3 +71,9 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
 Cypress.Commands.add('byPlaceholder', (placeholder) => {
   cy.get(`[placeholder="${placeholder}"]`);
 });
+
+Cypress.Commands.add('ensureLog', (user) => {
+  cy.visit('');
+  cy.get('.navbar')
+    .should('contain', user.username);
+});
