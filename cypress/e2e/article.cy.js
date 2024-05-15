@@ -12,8 +12,9 @@ describe('Article flow', () => {
   it('the user should be able to create an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.createArticle(article.title, article.description, article.body);
-    cy.visit('/editor');
-    
+    cy.visit('/');
+    cy.get('[class="hide-text user-pic"]').click();
+    cy.get('[class="preview-link"]').should('contain', article.title, article.description, article.body);
   });
 
   it('the user should be able to delete an article', () => {
