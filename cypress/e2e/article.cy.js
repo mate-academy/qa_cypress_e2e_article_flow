@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-describe('should provide the ability to work with article', () => {
+describe('Articles', () => {
   let user;
   let article;
   beforeEach(() => {
