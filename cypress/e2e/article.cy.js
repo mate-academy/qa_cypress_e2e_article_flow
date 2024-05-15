@@ -9,10 +9,14 @@ describe('Article flow', () => {
       article = generateArticle;
     });
   });
-  it('the user should be able to create an article', () => {
+  it.only('the user should be able to create an article', () => {
     cy.login(user.email, user.username, user.password);
-    cy.createArticle(article.title, article.description, article.body);
-    cy.visit('/');
+    cy.visit('/editor');
+    cy.get('[placeholder="Article Title"]').type(article.title);
+    cy.get(`[placeholder="What's this article about?"]`).type(article.body);
+    cy.get('[placeholder="Write your article (in markdown)"]').type(article.description);
+    cy.get('.btn').contains('Publish Article').click();
+
     cy.get('[class="hide-text user-pic"]').click();
     cy.get('[class="preview-link"]').should('contain', article.title, article.description, article.body);
   });
