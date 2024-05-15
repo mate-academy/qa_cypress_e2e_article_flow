@@ -14,7 +14,6 @@ describe('Check article flow', () => {
   it('should create an article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('');
-    cy.createArticle(article.title, article.description, article.body);
     cy.visit('/editor');
 
     cy.byPlaceholder('Article Title')
@@ -39,9 +38,7 @@ describe('Check article flow', () => {
   it('should provide user to delete article', () => {
 
     cy.login(user.email, user.username, user.password);
-    cy.visit('');
-    cy.createArticle(article.title, article.description,
-      article.body)
+    cy.createArticle(article.title, article.description,article.body)
       .then((response) => {
         const slug = response.body.article.slug; 
         cy.visit('article/' + slug);
