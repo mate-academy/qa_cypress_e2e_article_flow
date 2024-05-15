@@ -60,6 +60,7 @@ describe('Conduit', () => {
       .should('contain.text', 'No articles are here... yet.');
 
     cy.url().should('not.contain', article.title);
+
     cy.get('.nav-link').should('contain.text', 'Your Feed');
     cy.get('.nav-link').should('contain.text', 'Global Feed');
   });
