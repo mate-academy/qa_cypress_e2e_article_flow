@@ -9,7 +9,7 @@ describe('Conduit', () => {
     cy.log(user);
   });
 
-  it('Create article', () => {
+  it('should create article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('');
     cy.get('.ion-compose').click();
@@ -23,7 +23,7 @@ describe('Conduit', () => {
     cy.get(':nth-child(2) > .preview-link > h1').should('be.visible');
   });
 
-  it('Delete test', () => {
+  it('should delete article', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('');
     cy.createArticle(
