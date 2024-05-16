@@ -25,6 +25,7 @@ describe('Conduit', () => {
   it('should login user with valid credantial', () => {
     cy.login(user.email, user.username, user.password);
     cy.visit('');
+    cy.get(':nth-child(4) > .nav-link').should('contains.text', user.username);
   });
 
   it('should allow user article creation', () => {
@@ -34,6 +35,7 @@ describe('Conduit', () => {
     cy.findByPlaseholder('Article Title').type(article.title);
     cy.findByPlaseholder(`What's this article about?`).type(article.description);
     cy.findByPlaseholder('Write your article (in markdown)').type(article.body);
+    cy.get('[placeholder="Enter tags"]').type(`${article.tag}{enter}`);
     cy.contains('[type="button"]', 'Publish Article').click();
 
     cy.get('h1').should('contain.text', article.title);
@@ -53,8 +55,7 @@ describe('Conduit', () => {
       cy.visit(`/article/${slug}`);
     });
 
-    cy.get('.container > .article-meta > :nth-child(3) > .btn-outline-danger')
-      .click();
+    cy.contains('.btn-outline-danger', 'Delete Article').click();
 
     cy.get('.article-preview')
       .should('contain.text', 'No articles are here... yet.');
