@@ -24,6 +24,10 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder^="${placeholder}"]`);
+});
+
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
@@ -31,8 +35,8 @@ Cypress.Commands.add('login', (email, username, password) => {
     user: {
       email,
       username,
-      password
-    }
+      password,
+    },
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
@@ -40,7 +44,7 @@ Cypress.Commands.add('login', (email, username, password) => {
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
-      username: response.body.user.username
+      username: response.body.user.username,
     };
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
@@ -59,12 +63,12 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
-        }
+          tagList: [],
+        },
       },
       headers: {
-        Authorization: `Token ${authToken}`
-      }
+        Authorization: `Token ${authToken}`,
+      },
     });
   });
 });
