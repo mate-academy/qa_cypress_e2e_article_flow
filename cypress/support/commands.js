@@ -3,8 +3,7 @@
 // create various custom commands and overwrite
 // existing commands.
 //
-// For more comprehensive examples of custom
-// commands please read more here:
+// For more comprehensive examples of custom commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
 //
@@ -24,34 +23,61 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder^="${placeholder}"]`);// Explicitly return the chainable
+});
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
+Cypress.Commands.add('login', (email, password) => {
+  cy.request({
+    method: 'POST',
+    url: '/api/users/login',
+    body: {
+      user: {
+        email,
+        password
+      }
     }
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: imgUrl,
+      effectiveImage: response.body.user.image,
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
       username: response.body.user.username
     };
-    window.localStorage.setItem('user', JSON.stringify(user));
+    window.localStorage.setItem('user', JSON.stringify(user));// Correctly set key as a string
     cy.setCookie('auth', response.body.user.token);
   });
 });
+// const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+
+// Cypress.Commands.add('login', (email, username, password) => {
+//   cy.request('POST', '/api/users', {
+//     user: {
+//       email: email,
+//       username: username,
+//       password: password
+//     }
+//   }).then((response) => {
+//     const user = {
+//       bio: response.body.user.bio,
+//       effectiveImage: imgUrl,
+//       email: response.body.user.email,
+//       image: response.body.user.image,
+//       token: response.body.user.token,
+//       username: response.body.user.username
+//     };
+//     window.localStorage.setItem('user', JSON.stringify(user));
+//     cy.setCookie('auth', response.body.user.token);
+//   });
+// })
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
+  return cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
@@ -67,4 +93,24 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('visitWithRetry', (url, options = {}) => {
+  const retries = options.retries || 5;
+  const delay = options.delay || 500; // Delay in milliseconds
+
+  const visitWithRetry = (attempt) => {
+    cy.log(`Attempt ${attempt + 1} to visit ${url}`);
+    cy.visit(url, { failOnStatusCode: false })
+      .then((response) => {
+        if (response.status === 404 && attempt < retries) {
+          cy.wait(delay);
+          visitWithRetry(attempt + 1);
+        } else if (response.status !== 200) {
+          throw new Error(`Failed to visit ${url} after ${retries + 1} attempts`);
+        }
+      });
+  };
+
+  visitWithRetry(0);
 });

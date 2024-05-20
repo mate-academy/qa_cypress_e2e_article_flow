@@ -4,19 +4,18 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "cypress-image-snapshot": "^4.0.1",
-    "eslint-plugin-cypress": "^2.12.1",
     "@faker-js/faker": "^8.4.1",
+    "eslint-plugin-cypress": "^2.12.1",
     "pg": "^8.9.0",
     "sequelize": "^6.21.2",
     "sequelize-cli": "^6.4.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/cypress": "latest",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
-    "@faker-js/faker": "^8.4.1",
-    "cypress": "^12.13.0",
+    "cypress": "^13.8.1",
     "eslint": "^8.34.0",
     "eslint-config-standard-with-typescript": "^34.0.0",
     "eslint-plugin-import": "^2.27.5",
@@ -25,7 +24,8 @@
     "eslint-plugin-vue": "^9.9.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "@simonsmith/cypress-image-snapshot": "^9.0.2"
   },
   "husky": {
     "hooks": {
@@ -34,5 +34,11 @@
   },
   "lint-staged": {
     "*.js": "eslint --max-warnings=0"
-  }
+  },
+  "name": "y",
+  "description": "## Workflow",
+  "version": "1.0.0",
+  "main": ".eslintrc.js",
+  "author": "",
+  "license": "ISC"
 }
