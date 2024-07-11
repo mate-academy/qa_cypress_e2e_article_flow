@@ -26,13 +26,9 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('login', (user) => {
   cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
+    user
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
@@ -44,6 +40,8 @@ Cypress.Commands.add('login', (email, username, password) => {
     };
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
+  }).then(() => {
+    cy.visit('https://conduit.mate.academy/');
   });
 });
 
