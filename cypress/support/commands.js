@@ -26,7 +26,9 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('login', (userData) => {
+  const { email, username, password } = userData;
+
   cy.request('POST', '/api/users', {
     user: {
       email,
@@ -43,12 +45,14 @@ Cypress.Commands.add('login', (email, username, password) => {
       username: response.body.user.username
     };
     window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+    cy.setCookie('x-token', response.body.user.token);
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
+Cypress.Commands.add('createArticle', (articleForm) => {
+  const { title, description, body, tags } = articleForm;
+
+  cy.getCookie('x-token').then((token) => {
     const authToken = token.value;
 
     cy.request({
@@ -59,12 +63,26 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
+          tagList: [tags]
         }
       },
       headers: {
         Authorization: `Token ${authToken}`
       }
-    });
+    }).then((response) => response.body.article);
+  });
+});
+
+Cypress.Commands.add('deleteArticle', (slug) => {
+  cy.getCookie('x-token').then((token) => {
+    const authToken = token.value;
+
+    cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${slug}`,
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
+    }).then((response) => response.status);
   });
 });
