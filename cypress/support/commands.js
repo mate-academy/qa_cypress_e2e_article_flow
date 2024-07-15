@@ -69,9 +69,7 @@ Cypress.Commands.add('createArticle', (articleForm) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
-    }).then((response) => ({
-      ...response.body.article
-    }));
+    }).then((response) => response.body.article);
   });
 });
 
@@ -85,6 +83,6 @@ Cypress.Commands.add('deleteArticle', (slug) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
-    });
+    }).then((response) => response.status);
   });
 });
