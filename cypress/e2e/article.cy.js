@@ -21,7 +21,7 @@ describe('Article Flow', () => {
     cy.get('button').contains('Sign up').click();
 
     // Ensure user is logged in by checking for an element visible on the main page after login
-    cy.get('a').contains('New Article').should('exist'); // Перевірка наявності кнопки "New Article"
+    cy.get('a').contains('New Article').should('exist');
 
     // Create an article
     cy.get('a').contains('New Article').click();
