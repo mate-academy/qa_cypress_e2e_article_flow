@@ -24,47 +24,31 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
-
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
-  });
+Cypress.Commands.add("findByPlaceholder", (placeholder) => {
+  cy.get(`[placeholder="${placeholder}"]`);
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+Cypress.Commands.add("pickDate", (data) => {
+  cy.get(`.react-datepicker__${data}`);
+});
 
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
-        }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
-      }
-    });
+Cypress.Commands.add("login", (email, password) => {
+  cy.request("POST", "api/users/login", {
+    user: {
+      email: email,
+      password: password,
+    },
+  }).then((response) => {
+    const user = {
+      username: response.body.user.username,
+      email: response.body.user.email,
+      token: response.body.user.token,
+      bio: response.body.user.bio,
+      image: response.body.user.effectiveImage,
+      effectiveImage:
+        "https://static.productionready.io/images/smiley-cyrus.jpg",
+    };
+    window.localStorage.setItem("user", JSON.stringify(user));
+    cy.setCookie("auth", response.body.user.token);
   });
 });
