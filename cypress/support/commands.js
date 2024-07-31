@@ -67,6 +67,8 @@ Cypress.Commands.add("createArticle", (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`,
       },
+    }).then((response) => {
+      Cypress.env("articleUrl", `/article/${response.body.article.slug}`);
     });
   });
 });
