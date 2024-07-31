@@ -24,47 +24,63 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+const { faker } = require("@faker-js/faker");
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+const imgUrl = "https://static.productionready.io/images/smiley-cyrus.jpg";
+
+Cypress.Commands.add("login", (email, password) => {
+  cy.request("POST", "api/users/login", {
     user: {
-      email,
-      username,
-      password
-    }
+      email: email,
+      password: password,
+    },
   }).then((response) => {
     const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
+      username: response.body.user.username,
       email: response.body.user.email,
-      image: response.body.user.image,
       token: response.body.user.token,
-      username: response.body.user.username
+      bio: response.body.user.bio,
+      image: response.body.user.effectiveImage,
+      effectiveImage:
+        "https://static.productionready.io/images/smiley-cyrus.jpg",
     };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+    window.localStorage.setItem("user", JSON.stringify(user));
+    cy.setCookie("auth", response.body.user.token);
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
+Cypress.Commands.add("createArticle", (title, description, body) => {
+  cy.getCookie("auth").then((token) => {
     const authToken = token.value;
 
     cy.request({
-      method: 'POST',
-      url: '/api/articles',
+      method: "POST",
+      url: "/api/articles",
       body: {
         article: {
           title,
           description,
           body,
-          tagList: []
-        }
+          tagList: [],
+        },
       },
       headers: {
-        Authorization: `Token ${authToken}`
-      }
+        Authorization: `Token ${authToken}`,
+      },
+    }).then((response) => {
+      Cypress.env("articleUrl", `/article/${response.body.article.slug}`);
     });
   });
 });
+
+const generateArticle = () => {
+  const randomNumber = Math.floor(Math.random() * 1000);
+  return {
+    title: faker.lorem.word() + randomNumber,
+    description: faker.lorem.word(),
+    body: faker.lorem.word(),
+    tag: faker.lorem.word(),
+  };
+};
+
+module.exports = { generateArticle };
