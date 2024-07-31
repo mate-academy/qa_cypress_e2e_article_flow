@@ -26,6 +26,22 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
+// Custom command to register a new user
+Cypress.Commands.add('register', (email, username, password) => {
+  cy.request('POST', '/api/users', {
+    user: {
+      email,
+      username,
+      password
+    }
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    const user = response.body.user;
+    window.localStorage.setItem('user', JSON.stringify(user));
+    cy.setCookie('auth', user.token);
+  });
+});
+
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
