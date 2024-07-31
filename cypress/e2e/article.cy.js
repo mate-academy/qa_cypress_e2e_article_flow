@@ -31,7 +31,17 @@ describe("Article flow", () => {
   });
 
   it("Delete the article", () => {
-    cy.visit(articleUrl);
+    cy.contains(".nav-link", "New Article").click();
+    cy.url().should("contain", "/editor");
+    cy.get('[placeholder="Article Title"]').type(article.title);
+    cy.get('[placeholder="What\'s this article about?"]').type(
+      article.description
+    );
+    cy.get('[placeholder="Write your article (in markdown)"]').type(
+      article.body
+    );
+    cy.get('[placeholder="Enter tags"]').type(article.tag).type("{enter}");
+    cy.contains('[type="button"]', "Publish").click();
     cy.contains(".btn", "Delete Article").click();
     cy.url().should("not.include", "/article");
   });
