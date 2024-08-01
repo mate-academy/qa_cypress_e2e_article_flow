@@ -1,41 +1,48 @@
-const { generateUser } = require('./generateUser');
+describe('Article', () => {
+  let user;
+  let article;
 
-// describe('Conduit', () => {
-//   let user;
-//   const article = {
-//     title: faker.lorem.word(),
-//     about: faker.lorem.words(5),
-//     content: faker.lorem.words(10),
-//     tag: faker.lorem.word()
-//   };
+  beforeEach(() => {
+    cy.task('generateUser').then((generateUser) => {
+      user = generateUser;
+    });
 
-//   beforeEach(() => {
-//     cy.visit('/');
-//     cy.task('generateUser').then((generateUser) => {
-//       user = generateUser;
-//     });
-//   });
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
+    });
 
-//   it('should create a new article', () => {
+    cy.visit('');
+  });
 
-//   });
-// });
+  it('should be created', () => {
+    cy.login(user.email, user.username, user.password);
 
-beforeEach(() => {
-  cy.visit('/');
-});
+    cy.visit('/editor');
 
-describe('Sign Up page', () => {
-  it('should registe user', () => {
-    cy.visit('/user/register');
-    const { username, email, password } = generateUser();
-    cy.visit('/user/register');
-    cy.get('[placeholder=Username]')
-      .type(username);
-    cy.get('[placeholder=Email]')
-      .type(email);
-    cy.get('[placeholder=Password]')
-      .type(password);
-    cy.get('.btn').click();
+    cy.get('[placeholder="Article Title"]').type(article.title);
+
+    cy.get('[placeholder="What\'s this article about?"]')
+      .type(article.description);
+
+    cy.get('[placeholder="Write your article (in markdown)"]')
+      .type(article.body);
+
+    cy.contains('.btn', 'Publish Article').click();
+  });
+
+  it('should be deleted', () => {
+    cy.login(user.email, user.username, user.password);
+
+    cy.createArticle(article.title, article.description,
+      article.body).then((response) => {
+      const slug = response.body.article.slug;
+
+      cy.visit(`/article/${slug}`);
+    });
+
+    cy.contains('.btn', 'Delete Article').click();
+
+    cy.get('.article-preview').should('contain',
+      'No articles are here... yet.');
   });
 });
