@@ -1,37 +1,44 @@
-import { faker } from '@faker-js/faker';
+/// <reference types="cypress" />
 
-describe('Article Flow', () => {
+describe('Conduit', () => {
+  let user;
+  let article;
+
   beforeEach(() => {
-    cy.visit('https://conduit.mate.academy/');
+    cy.task('generateUser').then((generateUser) => {
+      user = generateUser;
+    });
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
+    });
   });
 
-  it('Create and Delete Article', () => {
-    const user = {
-      username: faker.internet.userName(),
-      email: faker.internet.email().toLowerCase(),
-      password: '12345Qwert!'
-    };
+  it('should allow to create the article ', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.visit('');
 
-    // Registering a new user
-    cy.get('a').contains('Sign up').click();
-    cy.url().should('include', '/register');
-    cy.get('input[placeholder="Username"]').type(user.username);
-    cy.get('input[placeholder="Email"]').type(user.email);
-    cy.get('input[placeholder="Password"]').type(user.password);
-    cy.get('button').contains('Sign up').click();
+    cy.contains('.nav-link', 'New Article').click();
+    cy.findByPlaceholder('Article Title').type(article.title);
+    cy.findByPlaceholder('What\'s this article about?')
+      .type(article.description);
+    cy.findByPlaceholder('Write your article').type(article.body);
+    cy.findByPlaceholder('Enter tags').type(`${article.tag}{enter}`);
 
-    // Ensure user is logged in by checking for an element visible on the main page after login
-    cy.get('a').contains('New Article').should('exist');
+    cy.contains('.btn', 'Publish Article').click();
+    cy.url().should('contain', article.title);
+    cy.get('h1').should('contain', article.title);
+  });
 
-    // Create an article
-    cy.get('a').contains('New Article').click();
-    cy.url().should('include', '/editor');
-    cy.get('input[placeholder="Article Title"]').type('hello');
-    cy.get('input[placeholder="What\'s this article about?"]').type('idk');
-    cy.get('textarea[placeholder="Write your article (in markdown)"]').type('qamay24');
-    cy.get('button').contains('Publish Article').click();
+  it('should allow to delete the article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.createArticle(article.title, article
+      .description, article.body, article.tagList);
+    cy.visit('');
 
-    // Delete an article
-    cy.get('button').contains('Delete Article').click();
+    cy.contains('.nav-link', 'Global Feed').click();
+    cy.contains('.preview-link', article.title).click();
+    cy.url().should('contain', article.title);
+    cy.contains('.btn', 'Delete Article').click();
+    cy.url().should('not.contain', article.title);
   });
 });
