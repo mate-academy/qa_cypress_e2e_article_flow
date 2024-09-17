@@ -14,8 +14,17 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
-        }
-      });
+        },
+        generateArticle() {
+          const word = faker.lorem.word();
+          return {
+            title: word,
+            description: faker.lorem.words(),
+            body: faker.lorem.words(),
+            tag: faker.lorem.word()
+          };
+        },
+ });
     }
   }
 });
