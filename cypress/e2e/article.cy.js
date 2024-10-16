@@ -1,33 +1,46 @@
-const { faker } = require('@faker-js/faker');
+/// <reference types='cypress' />
 
-describe('Article CRUD', () => {
-  before(() => {
-  });
-  const articleTitle = faker.word.words(1);
-  const articleTopic = faker.word.words(2);
-  const articleDescription = faker.word.words(5);
-  const articleTag = faker.word.words(1);
+let user;
+let article;
 
-  it('should create new article', () => {
-    cy.task('generateUser').then((user) => {
-      cy.login(user.email, user.username, user.password);
+describe('Conduit', () => {
+  beforeEach(() => {
+    cy.visit('');
+    cy.task('generateUser').then((generateUser) => {
+      user = generateUser;
     });
-    cy.contains('.nav-link', 'New Article').click();
-    cy.get('[placeholder="Article Title"]').type(articleTitle);
-    cy.get('[placeholder="What\'s this article about?"]').type(articleTopic);
+
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
+    });
+  });
+
+  it('should login and create article', () => {
+    cy.login(user.email, user.username, user.password);
+
+    cy.visit('/editor');
+    cy.get('[placeholder="Article Title"]').type(article.title);
+    cy.get('[placeholder="What\'s this article about?"]').type(article.desc);
     cy.get('[placeholder="Write your article (in markdown)"]')
-      .type(articleDescription);
-    cy.get('[placeholder="Enter tags"]').type(`${articleTag}{enter}`);
+      .type(article.body);
+
     cy.contains('.btn', 'Publish Article').click();
-    cy.url().should('contain', 'article/');
+
+    cy.contains('.container', article.title).should('exist');
   });
 
-  it('shoud delete created article', () => {
-    cy.task('generateUser').then((user) => {
-      cy.login(user.email, user.username, user.password);
-    });
-    cy.createArticle(articleTitle, articleTopic, articleDescription);
+  it('should delete the article', () => {
+    cy.login(user.email, user.username, user.password);
+
+    cy.createArticle(article.title, article.desc, article.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
+
+        cy.visit(`article/${slug}`);
+      });
+
     cy.contains('.btn', 'Delete Article').click();
-    cy.url().should('contain', 'https://conduit.mate.academy/');
+
+    cy.contains('.nav-link', 'Global Feed').should('be.visible');
   });
 });
