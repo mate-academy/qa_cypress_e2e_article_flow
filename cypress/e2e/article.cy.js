@@ -4,7 +4,7 @@ describe('Conduit article flow', () => {
   let user;
   let dataforArticle;
 
-  beforeEach(() => {
+  before(() => {
     cy.visit('');
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
