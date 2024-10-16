@@ -19,7 +19,7 @@ module.exports = defineConfig({
           return {
             title: faker.word.verb(),
             description: faker.word.words(),
-            body: faker.word.words()
+            body: faker.lorem.paragraph(2)
           };
         }
       });

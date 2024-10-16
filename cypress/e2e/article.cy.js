@@ -17,8 +17,7 @@ describe('Article flow', () => {
 
     cy.visit('/editor');
 
-    cy.findByPlaceholder('Article Title')
-      .type(articleData.title);
+    cy.findByPlaceholder('Article Title').type(articleData.title);
 
     cy.findByPlaceholder('What\'s this article about?')
       .type(articleData.description);
@@ -42,9 +41,7 @@ describe('Article flow', () => {
         cy.visit(`article/${slug}`);
       });
 
-    cy.contains('.btn', 'Delete Article')
-      .eq(0)
-      .click();
+    cy.contains('.btn', 'Delete Article').eq(0).click();
 
     cy.contains('.nav-link', 'Global Feed')
       .should('be.visible');
