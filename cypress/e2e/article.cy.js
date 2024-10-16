@@ -1,13 +1,46 @@
-describe('', () => {
+describe('CRUD article', () => {
+  let user;
+  let articleData;
   before(() => {
-
+    cy.visit(' ');
+    cy.task('generateUser').then((generateUser) => {
+      user = generateUser;
+    });
+    cy.task('generateArticle').then((generateArticle) => {
+      articleData = generateArticle;
+    });
   });
 
-  it('', () => {
-
+  it('should create the article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.visit('/editor');
+    cy.contains('.nav-link', 'New Article').click();
+    cy.get('[placeholder="Article Title"]')
+      .type(articleData.title);
+    cy.get('[placeholder="What\'s this article about?"]')
+      .type(articleData.description);
+    cy.get('[placeholder="Write your article (in markdown)"]')
+      .type(articleData.body);
+    cy.contains('.btn', 'Publish Article')
+      .click();
+    cy.url().should('contain', 'article/');
   });
+  it('should delete the article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.createArticle(articleData.title,
+      articleData.description, articleData.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
 
-  it('', () => {
+        cy.visit(`article/${slug}`);
+      });
 
+    cy.contains('.btn', 'Delete Article').eq(0).click();
+
+    cy.contains('.nav-link', 'Global Feed')
+      .should('be.visible');
+
+    cy.get('.article-preview')
+      .should('contain.text', 'No articles are here... yet');
   });
 });
