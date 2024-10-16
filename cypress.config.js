@@ -12,14 +12,14 @@ module.exports = defineConfig({
           return {
             username: faker.person.firstName() + randomNumber,
             email: email.toLowerCase(),
-            password: '12345Qwert!'
+            password: faker.internet.password()
           };
         },
         generateArticle() {
           return {
             title: faker.word.verb(),
             description: faker.word.words(),
-            body: faker.lorem.paragraph(2)
+            body: faker.lorem.paragraph(10)
           };
         }
       });
