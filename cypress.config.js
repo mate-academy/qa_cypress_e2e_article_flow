@@ -9,7 +9,7 @@ module.exports = defineConfig({
         generateUser() {
           const username = faker.person.name();
           const email = faker.internet.email().toLowerCase();
-          const password = '12345Qwert!';
+          const password = faker.internet.password();
           return {
             username,
             email,
@@ -20,7 +20,7 @@ module.exports = defineConfig({
           const title = faker.lorem.words(3);
           const description = faker.lorem.sentence();
           const body = faker.lorem.paragraph();
-          const tagList = [faker.lorem.word()];
+          const tagList = [faker.lorem.words({ min: 1, max: 4 })];
           return {
             title,
             description,

@@ -2,7 +2,8 @@
 
 describe('Conduit article flow', () => {
   let user;
-  let dataforArticle;
+  let articleData;
+  let slug;
 
   before(() => {
     cy.visit('');
@@ -10,46 +11,47 @@ describe('Conduit article flow', () => {
       user = generateUser;
     });
     cy.task('generateDataForArticle').then((generateDataForArticle) => {
-      dataforArticle = generateDataForArticle;
+      articleData = generateDataForArticle;
+    });
+
+    beforeEach(() => {
+      cy.login(user.email, user.username, user.password);
     });
   });
 
-  it('should create a new article', () => {
-    cy.login(user.email, user.username, user.password);
+  it('should log in the user', () => {
+    cy.contains('a.nav-link', user.username).should('be.visible');
+  });
 
+  it('should navigate to the article editor', () => {
+    cy.visit('/editor');
+
+    cy.url().should('contain', '/editor');
+  });
+
+  it('should fill the article form', () => {
     cy.visit('/editor');
 
     cy.get('[placeholder="Article Title"]')
-      .type(dataforArticle.title);
-
+      .type(articleData.title);
     cy.get('[placeholder="What\'s this article about?"]')
-      .type(dataforArticle.description);
-
+      .type(articleData.description);
     cy.get('[placeholder="Write your article (in markdown)"]')
-      .type(dataforArticle.body);
+      .type(articleData.body);
 
-    cy.contains('.btn', 'Publish Article')
-      .click();
+    cy.contains('.btn', 'Publish Article').click();
+
+    cy.url().should('contain', '/article/');
+
+    cy.get('h1').should('have.text', articleData.title);
   });
 
   it('should delete the article', () => {
-    cy.login(user.email, user.username, user.password);
+    cy.visit(`/article/${slug}`);
 
-    cy.createArticle(
-      dataforArticle.title,
-      dataforArticle.description,
-      dataforArticle.body
-    )
-      .then((response) => {
-        const slug = response.body.article.slug;
+    cy.contains('.btn', 'Delete Article').click();
 
-        cy.visit(`article/${slug}`);
-      });
-
-    cy.contains('.btn', 'Delete Article')
-      .click();
-
-    cy.url().should('equal', Cypress.config().baseUrl);
+    cy.url().should('eq', Cypress.config().baseUrl + '/');
 
     cy.get('.article-preview')
       .should('have.text', 'No articles are here... yet');
