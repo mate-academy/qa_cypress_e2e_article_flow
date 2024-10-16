@@ -1,7 +1,7 @@
 describe('CRUD article', () => {
   let user;
   let articleData;
-  before(() => {
+  beforeEach(() => {
     cy.visit('');
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
@@ -23,7 +23,8 @@ describe('CRUD article', () => {
       .type(articleData.body);
     cy.contains('.btn', 'Publish Article')
       .click();
-    cy.url().should('contain', 'article/');
+    cy.contains('.container', articleData.title)
+      .should('exist');
   });
   it('should delete the article', () => {
     cy.createArticle(articleData.title,
