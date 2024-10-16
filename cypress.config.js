@@ -1,5 +1,5 @@
 const { defineConfig } = require('cypress');
-const faker = require('@faker-js/faker').faker;
+const faker = require('faker');
 
 module.exports = defineConfig({
   e2e: {
@@ -19,7 +19,7 @@ module.exports = defineConfig({
           return {
             title: faker.word.verb(),
             description: faker.word.words(5),
-            body: faker.word.words(10)
+            body: faker.word.words(50)
           };
         }
       });

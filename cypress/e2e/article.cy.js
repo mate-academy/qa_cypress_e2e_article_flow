@@ -2,17 +2,17 @@ describe('CRUD article', () => {
   let user;
   let articleData;
   before(() => {
-    cy.visit(' ');
+    cy.visit('');
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
     });
     cy.task('generateArticle').then((generateArticle) => {
       articleData = generateArticle;
     });
+    cy.login(user.email, user.username, user.password);
   });
 
   it('should create the article', () => {
-    cy.login(user.email, user.username, user.password);
     cy.visit('/editor');
     cy.contains('.nav-link', 'New Article').click();
     cy.get('[placeholder="Article Title"]')
@@ -26,7 +26,6 @@ describe('CRUD article', () => {
     cy.url().should('contain', 'article/');
   });
   it('should delete the article', () => {
-    cy.login(user.email, user.username, user.password);
     cy.createArticle(articleData.title,
       articleData.description, articleData.body)
       .then((response) => {
@@ -34,12 +33,10 @@ describe('CRUD article', () => {
 
         cy.visit(`article/${slug}`);
       });
-
     cy.contains('.btn', 'Delete Article').eq(0).click();
-
+    cy.url().should('include', '/');
     cy.contains('.nav-link', 'Global Feed')
       .should('be.visible');
-
     cy.get('.article-preview')
       .should('contain.text', 'No articles are here... yet');
   });
