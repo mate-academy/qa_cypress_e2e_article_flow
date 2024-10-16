@@ -25,17 +25,15 @@ describe('Conduit', () => {
     cy.contains('.container', article.title).should('exist');
   });
 
-  it('', () => {
-    it('should delete the article', () => {
-      cy.login(user.email, user.username, user.password);
-      cy.createArticle(article.title, article.desc, article.body)
-        .then((response) => {
-          const slug = response.body.article.slug;
-          cy.visit(`article/${slug}`);
-        });
-      cy.contains('.btn', 'Delete Article').click();
+  it('should delete the article', () => {
+    cy.login(user.email, user.username, user.password);
+    cy.createArticle(article.title, article.desc, article.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
+        cy.visit(`article/${slug}`);
+      });
+    cy.contains('.btn', 'Delete Article').click();
 
-      cy.contains('.nav-link', 'Global Feed').should('be.visible');
-    });
+    cy.contains('.nav-link', 'Global Feed').should('be.visible');
   });
 });
