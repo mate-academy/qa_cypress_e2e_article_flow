@@ -49,6 +49,9 @@ Cypress.Commands.add('login', (email, username, password) => {
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
+    if (!token) {
+      throw new Error('Auth cookie not found. Make sure you are logged in.');
+    }
     const authToken = token.value;
 
     cy.request({
@@ -63,7 +66,24 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
         }
       },
       headers: {
-        Authorization: `Token ${authToken}`
+        Authorization: `Token ${authToken}` 
+      }
+    });
+  });
+});
+
+Cypress.Commands.add('deleteArticle', (slug) => {
+  cy.getCookie('auth').then((token) => {
+    if (!token) {
+      throw new Error('Auth cookie not found. Make sure you are logged in.');
+    }
+    const authToken = token.value;
+
+    cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${slug}`, 
+      headers: {
+        Authorization: `Token ${authToken}` 
       }
     });
   });
