@@ -3,11 +3,11 @@ describe('Conduit', () => {
       cy.clearCookies(); 
       cy.clearLocalStorage();
       cy.visit('/user/login');
-      cy.wait(1000);
+      cy.get('input[placeholder="Email"]').should('be.visible');
       cy.get('input[placeholder="Email"]').type('hogwortsexpress@gmail.com');
       cy.get('input[placeholder="Password"]').type('Qwert123!');
       cy.get('.btn').click();
-      cy.contains("Your Feed", { timeout: 10000 }).should("exist");
+      cy.contains("Your Feed",).should("exist");
     });
 
   it('Should create and delete an article', () => {
@@ -19,12 +19,10 @@ describe('Conduit', () => {
       cy.get('input[placeholder="Enter tags"]').type('HP{enter}');
       cy.get('button[type="button"]').contains('Publish Article').click();
 
-      cy.contains('Young wizard', { timeout: 10000 }).should('exist');
+      cy.contains('Young wizard',).should('exist');
       cy.contains('HP', { timeout: 10000 }).should('exist');
 
-      cy.wait(2000);
-
-      cy.contains('Young wizard') 
+      cy.contains('Young wizard').should('exist')
       .parent() 
       .find('button.btn-outline-danger')
       .click();
