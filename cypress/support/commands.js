@@ -26,12 +26,12 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
+Cypress.Commands.add('login', (user) => {
+  cy.request({
+    method: 'POST',
+    url: '/api/users/login',
+    body: {
+      user
     }
   }).then((response) => {
     const user = {
@@ -47,24 +47,39 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+Cypress.Commands.add('createArticle', (user, article) => {
+  cy.request({
+    method: 'POST',
+    url: '/api/users/login',
+    body: {
+      user: {
+        email: user.email,
+        password: user.password
+      }
+    }
+  }).then((loginResponse) => {
+    expect(loginResponse.status).to.eq(200);
+    const authToken = loginResponse.body.user.token;
+    cy.setCookie('auth', authToken);
 
     cy.request({
       method: 'POST',
       url: '/api/articles',
+      headers: {
+        Authorization: 'Token ' + authToken
+      },
       body: {
         article: {
-          title,
-          description,
-          body,
-          tagList: []
+          title: article.title,
+          description: article.description,
+          body: article.body,
+          tagList: article.tagList || []
         }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
       }
+    }).then((articleResponse) => {
+      expect(articleResponse.status).to.eq(200);
+
+      cy.visit(`/article/${articleResponse.body.article.slug}`);
     });
   });
 });
