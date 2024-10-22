@@ -26,6 +26,11 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
+Cypress.Commands.add('getByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder="${placeholder}"]`);
+});
+
+
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
