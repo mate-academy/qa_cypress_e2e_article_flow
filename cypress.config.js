@@ -12,7 +12,7 @@ module.exports = defineConfig({
           return {
             username: faker.name.firstName() + randomNumber,
             email: email.toLowerCase(),
-            password: '12345Qwert!'
+            password: '12345Qwert!' //
           };
         }
       });

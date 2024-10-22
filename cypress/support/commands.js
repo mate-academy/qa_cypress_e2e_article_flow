@@ -48,7 +48,7 @@ Cypress.Commands.add('login', (email, username, password) => {
       username: response.body.user.username
     };
     window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+    cy.setCookie('auth', response.body.user.token); //
   });
 });
 

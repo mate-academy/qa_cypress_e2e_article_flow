@@ -33,8 +33,10 @@ describe('Artical flow', () => {
               .click();
 
           cy.getByPlaceholder('Article Title').type(article.title);
-          cy.getByPlaceholder('What\'s this article about?').type(article.description);
-          cy.getByPlaceholder('Write your article (in markdown)').type(article.body);
+          cy.getByPlaceholder('What\'s this article about?')
+              .type(article.description);
+          cy.getByPlaceholder('Write your article (in markdown)')
+              .type(article.body);
           cy.getByPlaceholder('Enter tags')
               .click()
               .type(`${article.tagList}{enter}`);
@@ -65,7 +67,7 @@ describe('Artical flow', () => {
                     }).then((response) => {
                         expect(response.status).to.eq(204);
                     });
-                    
+
                     cy.visit(`/article/${articleSlug}`);
                     cy.contains('Article not found');
                 });
