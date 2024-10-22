@@ -26,6 +26,11 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
+Cypress.Commands.add('getByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder="${placeholder}"]`);
+});
+
+
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
@@ -43,7 +48,7 @@ Cypress.Commands.add('login', (email, username, password) => {
       username: response.body.user.username
     };
     window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+    cy.setCookie('auth', response.body.user.token); //
   });
 });
 
