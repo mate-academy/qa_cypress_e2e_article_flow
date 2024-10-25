@@ -22,10 +22,6 @@ class ArticlePageObject extends PageObject {
     return cy.get('.btn.btn-lg.btn-primary');
   }
 
-  get deleteArticleButton() {
-    return cy.get('.btn.btn-outline-danger').contains('Delete Article');
-  }
-
   onClickSubmitArticle() {
     this.submitButton.click();
   }

@@ -48,7 +48,7 @@ Cypress.Commands.add('login', (email, username, password) => {
 });
 
 Cypress.Commands.add('findByPlaceholder', (placeholder) => {
-  cy.get(`[placeholder="${placeholder}"]`);
+  return cy.get(`[placeholder="${placeholder}"]`);
 });
 
 Cypress.Commands.add(
