@@ -47,24 +47,35 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  return cy.get(`[placeholder="${placeholder}"]`);
+});
 
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
+Cypress.Commands.add(
+  'createArticle',
+  ({ title, description, body, tag }) => {
+    cy.getCookie('auth').then((token) => {
+      const authToken = token.value;
+
+      cy.request({
+        method: 'POST',
+        url: '/api/articles',
+        body: {
+          article: {
+            title,
+            description,
+            body,
+            tagList: [tag]
+          }
+        },
+        headers: {
+          Authorization: `Token ${authToken}`
         }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
-      }
+      });
     });
-  });
+  }
+);
+
+Cypress.Commands.add('assertPageURL', (url) => {
+  cy.url().should('equal', Cypress.config().baseUrl + url);
 });
