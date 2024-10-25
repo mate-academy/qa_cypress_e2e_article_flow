@@ -1,9 +1,10 @@
+const faker = require('@faker-js/faker');
 const { defineConfig } = require("cypress");
-const faker = require('faker');
 
 module.exports = defineConfig({
   e2e: {
     baseUrl: 'https://conduit.mate.academy/',
+    defaultCommandTimeout: 8000,
     setupNodeEvents(on, config) {
       on('task', {
         generateUser() {
