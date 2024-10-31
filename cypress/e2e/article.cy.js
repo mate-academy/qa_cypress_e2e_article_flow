@@ -52,10 +52,10 @@ describe('Article flow', () => {
           }
         }).then((response) => {
           expect(response.status).to.eq(204);
-        });
 
-        cy.visit(`/article/${articleSlug}`)
-          .should('not.be.visible');
+          cy.visit(`/article/${articleSlug}`);
+          cy.get('article').should('not.exist');
+        });
       });
     });
   });
