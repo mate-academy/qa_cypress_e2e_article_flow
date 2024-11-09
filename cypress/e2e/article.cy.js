@@ -22,7 +22,7 @@ describe('template spec', () => {
     cy.get(':nth-child(4) > .form-control').type(faker.lorem.words(1));
 
     cy.get('.btn').click();
-    cy.get('.btn').click();
+    // cy.get('.btn').click();
 
     cy.get(
       '.article-actions > .article-meta > :nth-child(3) > .btn-outline-danger'
