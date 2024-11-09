@@ -29,9 +29,9 @@ describe('Test', () => {
 
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
-        const slugUrl = response.body.article.slug;
+        const slugUr = response.body.article.slug;
 
-        cy.visit(`article/${slugUrl}`);
+        cy.visit(`article/${slugUr}`);
 
         cy.contains('.btn', 'Delete Article').click();
 
