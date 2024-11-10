@@ -4,29 +4,33 @@ describe('Test', () => {
 
   beforeEach(() => {
     cy.task('generateUser').then((generateUser) => {
-      user = generateUser();
-    });
+      user = generateUser;
 
-    cy.task('articleInput').then((articleInput) => {
-      article = articleInput();
+      return cy.task('generateArticle');
+    }).then((generateArticle) => {
+      article = generateArticle;
+
+      cy.login(user.email, user.username, user.password);
     });
   });
 
   it('should create article', () => {
-    cy.login(user.email, user.username, user.password);
+    cy.visit('/editor');
 
-    cy.createArticle(article.title, article.description, article.body);
+    cy.findByPlaceholder(`Article Title`).type(article.title);
+    cy.findByPlaceholder(`What's this article about?`).type(article.description);
+    cy.findByPlaceholder(`Write your article (in markdown)`).type(article.body);
 
-    cy.visit(`/`);
+    cy.get('.btn').click();
 
     cy.get(':nth-child(4) > .nav-link').click();
+
+    cy.reload();
 
     cy.get('h1').should('contain.text', `${article.title}`);
   });
 
   it('should delete article', () => {
-    cy.login(user.email, user.username, user.password);
-
     cy.createArticle(article.title, article.description, article.body)
       .then((response) => {
         const slugUr = response.body.article.slug;

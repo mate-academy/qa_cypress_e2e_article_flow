@@ -10,12 +10,12 @@ module.exports = defineConfig({
           const email = faker.internet.email();
           const randomNumber = Math.floor(Math.random() * 1000);
           return {
-            username: faker.name.firstName() + randomNumber,
+            username: faker.person.firstName() + randomNumber,
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
         },
-        articleInput() {
+        generateArticle() {
           return {
             title: faker.lorem.sentence(),
             description: faker.lorem.paragraph(),
