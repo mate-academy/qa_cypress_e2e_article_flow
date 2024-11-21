@@ -59,7 +59,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
+          tagList: [],
         }
       },
       headers: {
