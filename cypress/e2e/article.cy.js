@@ -1,25 +1,23 @@
 const { faker } = require('@faker-js/faker');
 
 describe('Article flow', () => {
-  let user;
+  const title = faker.lorem.words(5);
+  const description = faker.lorem.sentence(7);
+  const articleBody = faker.lorem.paragraph();
+  const tags = faker.lorem.word();
 
   beforeEach(() => {
     cy.visit('/');
 
     cy.task('generateUser').then((data) => {
-      user = data;
+      const { email, username, password } = data;
+
+      cy.login(email, username, password);
+      cy.reload();
     });
   });
 
   it('user should be able to create an article', () => {
-    const title = faker.lorem.words(5);
-    const description = faker.lorem.sentence(7);
-    const articleBody = faker.lorem.paragraph();
-    const tags = faker.lorem.word();
-
-    cy.login(user.email, user.username, user.password);
-    cy.reload();
-
     cy.contains('.nav-link', 'New Article').click();
 
     cy.getPlaceholder('Article Title').type(title);
@@ -35,19 +33,12 @@ describe('Article flow', () => {
   });
 
   it('user should be able to delete the article', () => {
-    const title = faker.lorem.words(5);
-    const description = faker.lorem.sentence(8);
-    const body = faker.lorem.paragraph();
-
-    cy.login(user.email, user.username, user.password);
-    cy.reload();
-
-    cy.createArticle(title, description, body);
+    cy.createArticle(title, description, articleBody);
 
     cy.contains('.nav-link', 'Global Feed').click();
     cy.get('.article-preview').contains('h1', `Article title: ${title}`).click();
 
-    cy.contains('.btn', 'Delete Article').type('{enter}');
+    cy.contains('button', 'Delete Article').type('{enter}');
 
     cy.contains('.nav-link', 'Global Feed').click();
     cy.get('h1').should('not.have.value', `Article title: ${title}`);
