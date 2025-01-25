@@ -1,5 +1,5 @@
-const { defineConfig } = require("cypress");
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
+const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
