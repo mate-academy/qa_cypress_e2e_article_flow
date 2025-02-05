@@ -1,13 +1,49 @@
-describe('', () => {
-  before(() => {
+/// <reference types='cypress' />
 
+let user;
+let article;
+
+describe('Conduit', () => {
+  beforeEach(() => {
+    cy.task('db:clear');
+    cy.visit('');
+    cy.task('generateUser').then((generateUser) => {
+      user = generateUser;
+      expect(user).to.not.be.null;
+    });
+
+    cy.task('generateArticle').then((generateArticle) => {
+      article = generateArticle;
+      expect(article).to.not.be.null;
+    });
   });
 
-  it('', () => {
+  it('should login and create article', () => {
+    cy.login(user.email, user.username, user.password);
 
+    cy.visit('/editor');
+    cy.get('[placeholder="Article Title"]').type(article.title);
+    cy.get('[placeholder="What\'s this article about?"]').type(article.desc);
+    cy.get('[placeholder="Write your article (in markdown)"]').type(article.body);
+
+    cy.contains('.btn', 'Publish Article').click();
+
+    cy.contains('.container', article.title).should('exist');
   });
 
-  it('', () => {
+  it('should delete the article', () => {
+    cy.login(user.email, user.username, user.password);
 
+    cy.createArticle(article.title, article.desc, article.body)
+      .then((response) => {
+        const slug = response.body.article.slug;
+        cy.visit(`article/${slug}`);
+      });
+
+    cy.contains('.btn', 'Delete Article').click();
+
+    // Перевірка, що стаття була видалена
+    cy.contains('.nav-link', 'Global Feed').should('be.visible');
+    cy.contains(article.title).should('not.exist');
   });
 });
