@@ -32,6 +32,7 @@ describe('Article testing', () => {
     cy.contains('button', 'Delete Article').click();
     cy.goGlobalFeed();
     cy.reload();
+    cy.goGlobalFeed();
     cy.contains(articleData.title).should('not.exist');
   });
 });
