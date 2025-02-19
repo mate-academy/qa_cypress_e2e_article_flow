@@ -47,10 +47,16 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
+Cypress.Commands.add('createArticleAPI', (articleData) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
+    const {
+      title,
+      description,
+      body,
+      tag
+    } = articleData;
     cy.request({
       method: 'POST',
       url: '/api/articles',
@@ -59,7 +65,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
+          tagList: [tag]
         }
       },
       headers: {
@@ -67,4 +73,34 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('createArticleUI', (articleData) => {
+  const {
+    title,
+    description,
+    body,
+    tag
+  } = articleData;
+  cy.get('input[placeholder="Article Title"]').type(title);
+  cy.get('input[placeholder="What\'s this article about?"]').type(description);
+  cy.get('textarea[placeholder="Write your article (in markdown)"]').type(body);
+  cy.get('input[placeholder="Enter tags"]').type(tag);
+  cy.get('button').contains('Publish Article').click();
+  cy.get('button').contains('Publish Article').click();
+});
+
+Cypress.Commands.add('verifyArticleData', (articleData) => {
+  const {
+    title,
+    body,
+    tag
+  } = articleData;
+  cy.get('h1').should('contain.text', title);
+  cy.get('div > p').should('contain.text', body);
+  cy.get('li.tag-default.tag-pill.tag-outline').should('contain.text', tag);
+});
+
+Cypress.Commands.add('goGlobalFeed', () => {
+  cy.contains('a', 'Global Feed').click();
 });
