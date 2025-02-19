@@ -10,15 +10,13 @@ function generateRandomUser() {
   };
 }
 describe('Article testing', () => {
-  before(() => {
+  beforeEach(() => {
     const randomUser = generateRandomUser();
     cy.login(randomUser.email, randomUser.username, randomUser.password);
     cy.visit('/');
   });
 
   it('should create an article with valid data', () => {
-    const randomUser = generateRandomUser();
-    cy.login(randomUser.email, randomUser.username, randomUser.password);
     cy.visit('/editor');
     const articleData = generateArticleData();
     cy.createArticleUI(articleData);
@@ -26,11 +24,8 @@ describe('Article testing', () => {
   });
 
   it('should delete an article from Global Feed', () => {
-    const randomUser = generateRandomUser();
-    cy.login(randomUser.email, randomUser.username, randomUser.password);
     const articleData = generateArticleData();
     cy.createArticleAPI(articleData);
-    cy.visit('/');
     cy.reload();
     cy.goGlobalFeed();
     cy.contains(articleData.title).click();
