@@ -65,6 +65,16 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
-    });
+    }).then((response) => ({
+      slug: response.body.article.slug
+    }));
   });
+});
+
+Cypress.Commands.add('assureUrl', (url) => {
+  if (url) {
+    cy.url().should('equal', `${Cypress.config().baseUrl}${url}`);
+  } else {
+    cy.url().should('equal', `${Cypress.config().baseUrl}`);
+  }
 });
