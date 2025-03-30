@@ -14,6 +14,15 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
+        },
+        articleData() {
+          const title = faker.name.firstName();
+          const shortInfo = faker.name.firstName();
+          const articleBody = faker.lorem.text();
+          const tags = faker.name.lastName();
+          return {
+            title, shortInfo, articleBody, tags
+          };
         }
       });
     }
