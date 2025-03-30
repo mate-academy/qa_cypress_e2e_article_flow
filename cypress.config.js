@@ -16,6 +16,15 @@ module.exports = defineConfig({
           };
         }
       });
+      on('task', {
+        generateArticle() {
+          return {
+            title: faker.lorem.word(),
+            description: faker.lorem.words(2),
+            body: faker.lorem.sentences(3)
+          };
+        }
+      });
     }
   }
 });
