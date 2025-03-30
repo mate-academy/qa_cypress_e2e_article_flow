@@ -26,11 +26,10 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+Cypress.Commands.add('login', (email, password) => {
+  cy.request('POST', 'api/users/login', {
     user: {
       email,
-      username,
       password
     }
   }).then((response) => {
@@ -67,4 +66,12 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       }
     });
   });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder ="${placeholder}"]`);
+});
+
+Cypress.Commands.add('pickDate', (data) => {
+  cy.get(`.react-datepicker__${data}`);
 });
