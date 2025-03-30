@@ -24,47 +24,56 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+// Логін користувача через API
+// Реєстрація користувача через API
+// Реєстрація користувача через API
 
+Cypress.Commands.add('registerUser', (email, username, password) => {
+  cy.request({
+    method: 'POST',
+    url: '/api/users',
+    body: {
+      user: {
+        email,
+        username,
+        password
+      }
+    },
+    failOnStatusCode: false // Додано, щоб уникнути помилки через вже зайнятий email
+  }).then((response) => {
+    if (response.status === 422) {
+      cy.log('Ця електронна пошта або ім\'я користувача вже використовується.');
+    } else {
+      expect(response.status).to.eq(200); // Перевірка, що користувач зареєстрований
+    }
+  });
+});
+
+// Логін користувача через API
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
+  cy.request({
+    method: 'POST',
+    url: '/api/users/login',
+    body: {
+      user: {
+        email,
+        password
+      }
     }
   }).then((response) => {
+    expect(response.status).to.eq(200); // Перевірка, що логін успішний
+
     const user = {
       bio: response.body.user.bio,
-      effectiveImage: imgUrl,
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
       username: response.body.user.username
     };
+    // Зберігаємо дані користувача в localStorage
     window.localStorage.setItem('user', JSON.stringify(user));
+
+    // Встановлюємо auth-токен як кукі
     cy.setCookie('auth', response.body.user.token);
-  });
-});
-
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
-
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
-        }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
-      }
-    });
   });
 });
