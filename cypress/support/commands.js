@@ -24,6 +24,10 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.add('findByPlaceholder', (placeholder) => {
+  cy.get(`[placeholder^="${placeholder}"]`);
+});
+
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
@@ -46,11 +50,9 @@ Cypress.Commands.add('login', (email, username, password) => {
     cy.setCookie('auth', response.body.user.token);
   });
 });
-
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
-
     cy.request({
       method: 'POST',
       url: '/api/articles',
