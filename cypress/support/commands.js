@@ -65,6 +65,15 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      const createdArticle = {
+        slug: response.body.article.slug
+      };
+      cy.wrap(createdArticle).as('article');
     });
   });
+});
+
+Cypress.Commands.add('findByPlaceholder', (placeholder, tag = 'input') => {
+  cy.get(`${tag}[placeholder="${placeholder}"]`);
 });
