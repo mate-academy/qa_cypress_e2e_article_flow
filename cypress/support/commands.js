@@ -26,11 +26,11 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('login', (username, email, password) => {
   cy.request('POST', '/api/users', {
     user: {
-      email,
       username,
+      email,
       password
     }
   }).then((response) => {
