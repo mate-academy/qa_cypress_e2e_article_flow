@@ -4,6 +4,7 @@ describe('article', () => {
   let title;
   let description;
   let body;
+
   beforeEach(() => {
     const { userName, email, password } = generateUser();
 
@@ -29,12 +30,12 @@ describe('article', () => {
     cy.createArticle(title, description, body)
       .then((response) => {
         const slug = response.body.article.slug;
-        cy.visit(`article/${slug}`);
+        cy.visit(`https://conduit.mate.academy/article/${slug}`);
       });
 
     cy.contains('.btn', 'Delete Article').click();
     cy.contains('.nav-link', 'Global Feed').should('be.visible');
-    cy.get('.article-preview').should('contain.text',
-      'No articles are here... yet.');
+    // eslint-disable-next-line max-len
+    cy.get('.article-preview').should('contain.text', 'No articles are here... yet.');
   });
 });
