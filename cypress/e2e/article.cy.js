@@ -28,7 +28,7 @@ describe('Conduit - Create and Delete Article Flow', () => {
       cy.visit(`/article/${article.slug}`);
       cy.contains('Delete Article').click();
 
-      cy.url().should('eq', 'https://conduit.mate.academy/');
+      cy.url().should('eq', '/');
       cy.visit(`/article/${article.slug}`);
       cy.contains('Page not found').should('exist');
     });
