@@ -26,7 +26,7 @@
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
+Cypress.Commands.add('register', (email, username, password) => {
   cy.request('POST', '/api/users', {
     user: {
       email,
@@ -49,6 +49,12 @@ Cypress.Commands.add('login', (email, username, password) => {
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
+    if (!token) {
+      throw new Error(
+        'Auth token not found.'
+      );
+    }
+
     const authToken = token.value;
 
     cy.request({
