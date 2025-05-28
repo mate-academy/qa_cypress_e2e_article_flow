@@ -25,27 +25,26 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
-
+console.log('file.inport')
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
-  });
+  return cy.request('POST', '/api/users', { user: { email, username, password }})
+    .then(response => {
+      const user = {
+        bio: response.body.user.bio,
+        effectiveImage: imgUrl,
+        email: response.body.user.email,
+        image: response.body.user.image,
+        token: response.body.user.token,
+        username: response.body.user.username
+      };
+      window.localStorage.setItem('user', JSON.stringify(user));
+      cy.setCookie('auth', response.body.user.token);
+      
+      // zamiast return response.body.user.token zwróć przez cy.wrap
+      return cy.wrap(response.body.user.token);
+    });
 });
+
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
@@ -65,6 +64,9 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
-    });
+    }).then((resp) => {
+  expect(resp.status).to.eq(200)
+    })
+    })
   });
-});
+
