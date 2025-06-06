@@ -1,69 +1,49 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
-
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
+  return cy.request({
+    method: 'POST',
+    url: 'https://conduit.mate.academy/api/users',
+    failOnStatusCode: false,
+    body: {
+      user: {
+        email,
+        username,
+        password
+      }
     }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+  }).then(() => {
+    return cy.request({
+      method: 'POST',
+      url: 'https://conduit.mate.academy/api/users/login',
+      body: {
+        user: {
+          email,
+          password
+        }
+      }
+    }).then((response) => {
+      window.localStorage.setItem('user', JSON.stringify(response.body.user));
+    });
   });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  return cy.then(() => {
+    const user = JSON.parse(window.localStorage.getItem('user'));
+    const token = user.token;
 
-    cy.request({
+    return cy.request({
       method: 'POST',
-      url: '/api/articles',
+      url: 'https://conduit.mate.academy/api/articles',
+      headers: {
+        Authorization: `Token ${token}`
+      },
       body: {
         article: {
           title,
           description,
           body,
-          tagList: []
+          tagList: [] // 🟢 Обов’язкове поле для API Conduit
         }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
       }
     });
   });
