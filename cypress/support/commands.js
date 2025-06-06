@@ -1,37 +1,8 @@
-Cypress.Commands.add('login', (email, username, password) => {
-  return cy.request({
-    method: 'POST',
-    url: 'https://conduit.mate.academy/api/users',
-    failOnStatusCode: false,
-    body: {
-      user: {
-        email,
-        username,
-        password
-      }
-    }
-  }).then(() => {
-    return cy.request({
-      method: 'POST',
-      url: 'https://conduit.mate.academy/api/users/login',
-      body: {
-        user: {
-          email,
-          password
-        }
-      }
-    }).then((response) => {
-      window.localStorage.setItem('user', JSON.stringify(response.body.user));
-    });
-  });
-});
-
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  return cy.then(() => {
-    const user = JSON.parse(window.localStorage.getItem('user'));
-    const token = user.token;
+  cy.getCookie('auth').should('exist').then((cookie) => {
+    const token = cookie.value;
 
-    return cy.request({
+    cy.request({
       method: 'POST',
       url: 'https://conduit.mate.academy/api/articles',
       headers: {
@@ -42,9 +13,11 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: [] // 🟢 Обов’язкове поле для API Conduit
+          tagList: [] // 🔑 ключ до перемоги
         }
       }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
     });
   });
 });

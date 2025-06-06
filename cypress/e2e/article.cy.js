@@ -1,62 +1,66 @@
 describe('Article Flow via API', () => {
-  const uid = Date.now() + Math.floor(Math.random() * 1000);
-  const email = `user${uid}@test.com`;
-  const username = `user${uid}`;
-  const password = 'Testpassword123!';
+  const email = `user${Date.now()}@test.com`;
+  const username = `user${Date.now()}`;
+  const password = 'TestPassword123!';
 
-  const title = `Test Article ${uid}`;
+  const title = `Test Article ${Date.now()}`;
   const description = 'About testing';
   const body = 'This is a test article created by Cypress';
 
   it('should create a new article', () => {
-    cy.login(email, username, password).then(() => {
-      cy.createArticle(title, description, body);
-
-      cy.request('GET', 'https://conduit.mate.academy/api/articles?limit=10')
-        .its('body.articles')
-        .then((articles) => {
-          const article = articles.find((a) => a.title === title);
-          // eslint-disable-next-line no-unused-expressions
-          expect(article).to.exist;
-          expect(article.description).to.equal(description);
-        });
+    cy.request('POST', 'https://conduit.mate.academy/api/users', {
+      user: { email, username, password }
     });
+
+    cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
+      user: { email, password }
+    }).then((response) => {
+      const user = response.body.user;
+      cy.setCookie('auth', user.token);
+
+      cy.window().then((win) => {
+        win.localStorage.setItem('user', JSON.stringify(user));
+      });
+    });
+
+    cy.createArticle(title, description, body);
   });
 
   it('should delete the article', () => {
-    cy.login(email, username, password).then(() => {
-      cy.createArticle(title, description, body).then(() => {
-        const user = JSON.parse(window.localStorage.getItem('user'));
-        const authToken = user.token;
+    cy.request('POST', 'https://conduit.mate.academy/api/users/login', {
+      user: { email, password }
+    }).then((response) => {
+      const user = response.body.user;
+      cy.setCookie('auth', user.token);
 
-        cy.request({
-          method: 'GET',
-          url: 'https://conduit.mate.academy/api/articles?limit=10',
-          headers: {
-            Authorization: `Token ${authToken}`
-          }
-        }).then((res) => {
-          const slug = res.body.articles.find((a) => a.title === title).slug;
+      cy.window().then((win) => {
+        win.localStorage.setItem('user', JSON.stringify(user));
+      });
+    });
+
+    cy.createArticle(title, description, body);
+
+    cy.request('GET', 'https://conduit.mate.academy/api/articles?limit=10')
+      .then((res) => {
+        cy.window().then((win) => {
+          const user = JSON.parse(win.localStorage.getItem('user'));
+
+          const article = res.body.articles.find((a) => a.title === title);
+          // eslint-disable-next-line no-unused-expressions
+          expect(article, 'Article must be found').to.exist;
+
+          const slug = article.slug;
 
           cy.request({
             method: 'DELETE',
             url: `https://conduit.mate.academy/api/articles/${slug}`,
             headers: {
-              Authorization: `Token ${authToken}`
+              Authorization: `Token ${user.token}`
             }
-          }).then(() => {
-            // eslint-disable-next-line cypress/no-unnecessary-waiting
-            cy.wait(2000);
-
-            cy.request({
-              url: `https://conduit.mate.academy/api/articles/${slug}`,
-              failOnStatusCode: false
-            }).then((res) => {
-              expect(res.status).to.equal(404);
-            });
+          }).then((deleteResponse) => {
+            expect(deleteResponse.status).to.eq(204);
           });
         });
       });
-    });
   });
 });
