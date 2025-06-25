@@ -37,10 +37,8 @@ describe('Article Page', () => {
   it('should delete an article', function () {
     const { title, description, body } = generateArticle();
 
-    cy.createArticle(title, description, body).then((response) => {
-      cy.visit(
-        `${Cypress.config('baseUrl')}/article/${response.body.article.slug}`
-      );
+    cy.createArticle(title, description, body).then((article) => {
+      cy.visit(`${Cypress.config('baseUrl')}/article/${article.slug}`);
 
       cy.contains('button', 'Delete Article').should('exist').click();
       cy.visit(`${Cypress.config('baseUrl')}/profile/${this.user.username}`);

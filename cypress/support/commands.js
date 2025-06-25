@@ -27,48 +27,54 @@
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
-  });
+  return cy
+    .request('POST', '/api/users', {
+      user: {
+        email,
+        username,
+        password
+      }
+    })
+    .then((response) => {
+      const user = {
+        bio: response.body.user.bio,
+        effectiveImage: imgUrl,
+        email: response.body.user.email,
+        image: response.body.user.image,
+        token: response.body.user.token,
+        username: response.body.user.username
+      };
+
+      cy.setCookie('auth', response.body.user.token);
+      window.localStorage.setItem('user', JSON.stringify(user));
+    });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  return cy
+    .getCookie('auth')
+    .then((token) => {
+      const authToken = token.value;
 
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
+      return cy.request({
+        method: 'POST',
+        url: '/api/articles',
+        body: {
+          article: {
+            title,
+            description,
+            body,
+            tagList: []
+          }
+        },
+        headers: {
+          Authorization: `Token ${authToken}`
         }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
-      }
-    });
-  });
+      });
+    })
+    .then((response) => response.body.article);
 });
 
 Cypress.Commands.add('getByPlaceholder', (placeholder) => {
-  cy.get(`[placeholder="${placeholder}"]`).should('exist');
+  return cy.get(`[placeholder="${placeholder}"]`).should('exist');
 });
