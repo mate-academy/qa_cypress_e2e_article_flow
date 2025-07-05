@@ -1,29 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
@@ -47,11 +21,18 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
+const { faker } = require('@faker-js/faker');
+
+Cypress.Commands.add('createArticle', () => {
+  const title = faker.lorem.words(2);
+  const description = faker.lorem.sentence();
+  const body = faker.lorem.paragraph();
+  const tagList = ['test1', 'test2'];
+
+  return cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
@@ -59,12 +40,24 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
+          tagList
         }
       },
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      return {
+        title,
+        description,
+        body,
+        tagList: tagList.join(','),
+        slug: response.body.article.slug
+      };
     });
   });
 });
+
+Cypress.Commands.add('findByPlaceholder', (placeholder) =>
+  cy.get(`[placeholder="${placeholder}"]`)
+);
