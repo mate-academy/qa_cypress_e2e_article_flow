@@ -68,7 +68,3 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
     });
   });
 });
-
-Cypress.Commands.add('findByAttr', (attr, typeName) => {
-  cy.get(`[${attr}=${typeName}]`);
-});
