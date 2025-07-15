@@ -15,6 +15,8 @@
 
 App for testing: [Conduit](https://conduit.mate.academy/)
 
+https://react-redux.realworld.io
+
 **Your task** is to check next flow:
 
 1. Create the article:
