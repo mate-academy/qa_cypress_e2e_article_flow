@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -51,7 +52,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
