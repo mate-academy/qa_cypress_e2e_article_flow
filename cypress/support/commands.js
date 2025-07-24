@@ -5,66 +5,65 @@
 //
 // For more comprehensive examples of custom
 // commands please read more here:
-// https://on.cypress.io/custom-commands
+// https://on-cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+// Команда для входу в систему через API
+// Вона реєструє нового користувача та входить за нього, повертаючи токен
+Cypress.Commands.add('login', () => {
+  // Використовуємо Cypress task для генерації даних користувача
+  return cy.task('generateUser').then((user) => {
+    // 1. Реєструємо користувача через API
+    cy.request('POST', '/api/users', {
+      user: {
+        username: user.username,
+        email: user.email,
+        password: user.password
+      }
+    }).then((registerResponse) => {
+      expect(registerResponse.status).to.be.oneOf([200, 201]);
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+      // 2. Входимо в систему через API, щоб отримати токен
+      return cy.request('POST', '/api/users/login', {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }).then((loginResponse) => {
+        expect(loginResponse.status).to.eq(200);
+
+        const token = loginResponse.body.user.token;
+
+        return { user, token };
+      });
+    });
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+// Команда для створення статті через API
+Cypress.Commands.add('createArticle', (articleData) => {
+  // Отримуємо токен з localStorage, який має бути встановлений після API-входу
+  return cy.window().then((win) => {
+    const token = win.localStorage.getItem('jwt');
+    if (!token) {
+      throw new Error(
+        'JWT token not found in localStorage. Please ensure cy.login() was' +
+        ' called and succeeded before calling cy.createArticle().'
+      );
+    }
 
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
-        }
-      },
       headers: {
-        Authorization: `Token ${authToken}`
+        Authorization: `Token ${token}`
+      },
+      body: {
+        article: articleData
       }
+    }).then((response) => {
+      expect(response.status).to.eq(200); // Conduit API повертає 200 OK
+      return response.body.article; // Повертаємо створену статтю
     });
   });
 });
