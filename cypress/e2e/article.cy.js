@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-describe('', () => {
+describe('Article flow', () => {
   let user;
   const title = faker.lorem.word({ strategy: 'longest' });
   const description = faker.lorem.paragraph();
@@ -32,5 +32,13 @@ describe('', () => {
     cy.get('.article-preview').first().click();
     cy.contains('.btn-outline-danger', ' Delete Article')
       .click();
+
+    cy.visit('/');
+
+    cy.contains('.nav-link', 'Global Feed').click();
+
+    cy.get('.article-preview')
+      .find('.author')
+      .should('not.contain.text', user.username.toLowerCase());
   });
 });
