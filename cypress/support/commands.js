@@ -24,16 +24,26 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+Cypress.Commands.add('registerAndLogin', () => {
+  const timestamp = Date.now();
+  const email = `testuser_${timestamp}@example.com`;
+  const username = `user_${timestamp}`;
+  const password = `Password_${timestamp}_!`;
+  const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  return cy.request('POST', '/api/users', {
     user: {
       email,
       username,
       password
-    }
+    },
+    failOnStatusCode: false
   }).then((response) => {
+    if (response.status !== 200) {
+      throw new Error(`❌ Користувача створити не вдалося: ${JSON
+    .stringify(response.body.errors)}`);
+    }
+
     const user = {
       bio: response.body.user.bio,
       effectiveImage: imgUrl,
@@ -42,16 +52,29 @@ Cypress.Commands.add('login', (email, username, password) => {
       token: response.body.user.token,
       username: response.body.user.username
     };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+
+    return cy.window().then((win) => {
+      win.localStorage.setItem('user', JSON.stringify(user));
+    }).then(() => {
+      return cy.setCookie('auth', response.body.user.token);
+    }).then(() => {
+      return cy.wrap({ email, username, password });
+    });
   });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  return cy.window().then((win) => {
+    const storedUser = JSON.parse(win.localStorage.getItem('user'));
+    const token = storedUser?.token;
 
-    cy.request({
+    if (!token) {
+      throw new Error(
+'❌ Token not found in localStorage. Did you forget to call registerAndLogin()?'
+      );
+    }
+
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
@@ -63,7 +86,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
         }
       },
       headers: {
-        Authorization: `Token ${authToken}`
+        Authorization: `Token ${token}`
       }
     });
   });
