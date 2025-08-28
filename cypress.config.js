@@ -14,6 +14,15 @@ module.exports = defineConfig({
             email: email.toLowerCase(),
             password: '12345Qwert!'
           };
+        },
+        generateArticle() {
+          const random = Math.floor(Math.random() * 1000000);
+          return {
+            title: `Title ${random}`,
+            description: `Description ${random}`,
+            body: `This is the body of article ${random}`,
+            tags: [`tag${random}`, `tag${random + 1}`]
+          };
         }
       });
     }
