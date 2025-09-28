@@ -12,7 +12,10 @@ describe('Article', () => {
   it('should allow to create an article', () => {
     cy.visit('editor');
     cy.fixture('article.json').then((article) => {
-      cy.createArticle(article.title, article.description, article.body);
+      const title = `${article.title} ${Date.now()}`;
+      const description = `${article.description} ${Date.now()}`;
+      const body = `${article.body} ${Date.now()}`;
+      cy.createArticle(title, description, body);
     });
     cy.get('@user').then((user) => {
       cy.contains('a', (user.username.toLowerCase()))
@@ -22,12 +25,26 @@ describe('Article', () => {
       cy.contains('h1', article.title)
         .should('exist');
     });
+    cy.fixture('article.json').then((article) => {
+      cy.contains('p', article.description)
+        .should('exist');
+    });
+    cy.fixture('article.json').then((article) => {
+      cy.contains('h1', article.title)
+        .click();
+    });
+    cy.fixture('article.json').then((article) => {
+      cy.contains('p', article.body).should('exist');
+    });
   });
 
   it('should allow to delete an article', function () {
     cy.visit('editor');
     cy.fixture('article.json').then((article) => {
-      cy.createArticle(article.title, article.description, article.body);
+      const title = `${article.title} ${Date.now()}`;
+      const description = `${article.description} ${Date.now()}`;
+      const body = `${article.body} ${Date.now()}`;
+      cy.createArticle(title, description, body);
     });
     cy.get('@user').then((user) => {
       cy.contains('a', (user.username.toLowerCase()))
