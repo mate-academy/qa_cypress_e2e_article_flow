@@ -2,38 +2,29 @@
 // This example commands.js shows you how to
 // create various custom commands and overwrite
 // existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+Cypress.Commands.add('registerAndLogin', () => {
+  const timestamp = Date.now();
+  const email = `testuser_${timestamp}@example.com`;
+  const username = `user_${timestamp}`;
+  const password = `Password_${timestamp}_!`;
+  const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  return cy.request('POST', '/api/users', {
     user: {
       email,
       username,
       password
-    }
+    },
+    failOnStatusCode: false
   }).then((response) => {
+    if (response.status !== 200) {
+      throw new Error(
+        `❌ Користувача створити не вдалося: ${JSON.stringify(response.body.errors)}`
+      );
+    }
+
     const user = {
       bio: response.body.user.bio,
       effectiveImage: imgUrl,
@@ -42,16 +33,29 @@ Cypress.Commands.add('login', (email, username, password) => {
       token: response.body.user.token,
       username: response.body.user.username
     };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+
+    return cy.window().then((win) => {
+      win.localStorage.setItem('user', JSON.stringify(user));
+    }).then(() => {
+      cy.setCookie('auth', response.body.user.token);
+    }).then(() => {
+      return cy.wrap({ email, username, password });
+    });
   });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  return cy.window().then((win) => {
+    const storedUser = JSON.parse(win.localStorage.getItem('user'));
+    const token = storedUser?.token;
 
-    cy.request({
+    if (!token) {
+      throw new Error(
+        '❌ Token not found in localStorage. Did you forget to call registerAndLogin()?'
+      );
+    }
+
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
@@ -63,8 +67,11 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
         }
       },
       headers: {
-        Authorization: `Token ${authToken}`
+        Authorization: `Token ${token}`
       }
+    }).then((response) => {
+      const slug = response.body.article.slug;
+      cy.visit(`/article/${slug}`);
     });
   });
 });
