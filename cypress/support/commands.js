@@ -1,29 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
@@ -31,8 +5,8 @@ Cypress.Commands.add('login', (email, username, password) => {
     user: {
       email,
       username,
-      password
-    }
+      password,
+    },
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
@@ -40,18 +14,18 @@ Cypress.Commands.add('login', (email, username, password) => {
       email: response.body.user.email,
       image: response.body.user.image,
       token: response.body.user.token,
-      username: response.body.user.username
+      username: response.body.user.username,
     };
     window.localStorage.setItem('user', JSON.stringify(user));
     cy.setCookie('auth', response.body.user.token);
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
+Cypress.Commands.add('createArticle', (title, description, body, tags = []) => {
+  return cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
@@ -59,12 +33,26 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
-        }
+          tagList: tags,   // ✅ always use tagList
+        },
       },
       headers: {
-        Authorization: `Token ${authToken}`
-      }
+        Authorization: `Token ${authToken}`,
+      },
+    }).then((resp) => resp.body.article.slug); // return slug for chaining
+  });
+});
+
+Cypress.Commands.add('deleteArticle', (slug) => {
+  return cy.getCookie('auth').then((token) => {
+    const authToken = token.value;
+
+    return cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${slug}`,
+      headers: {
+        Authorization: `Token ${authToken}`,
+      },
     });
   });
 });
