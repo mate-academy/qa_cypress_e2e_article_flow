@@ -4,7 +4,8 @@ describe('Conduit Article Flow', () => {
   const username = `user_${uniqueId}`;
   const password = 'TestPassword123!';
 
-  before(() => {
+  // Login before every test to ensure localStorage has the token
+  beforeEach(() => {
     cy.login(email, username, password);
   });
 
@@ -15,7 +16,7 @@ describe('Conduit Article Flow', () => {
       'This is the article body',
       ['cypress', 'testing']
     ).then((slug) => {
-      expect(slug).to.contain('article'); // check slug exists
+      expect(slug).to.contain('article'); // check that slug exists
     });
   });
 
