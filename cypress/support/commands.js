@@ -2,11 +2,7 @@ const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
   cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password,
-    },
+    user: { email, username, password },
   }).then((response) => {
     const user = {
       bio: response.body.user.bio,
@@ -16,7 +12,6 @@ Cypress.Commands.add('login', (email, username, password) => {
       token: response.body.user.token,
       username: response.body.user.username,
     };
-
     cy.window().then((win) => {
       win.localStorage.setItem('user', JSON.stringify(user));
     });
@@ -26,22 +21,14 @@ Cypress.Commands.add('login', (email, username, password) => {
 Cypress.Commands.add('createArticle', (title, description, body, tags = []) => {
   return cy.window().then((win) => {
     const user = JSON.parse(win.localStorage.getItem('user'));
-    const authToken = user.token;
-
+    if (!user || !user.token) {
+      throw new Error('User not logged in. Please call cy.login() first.');
+    }
     return cy.request({
       method: 'POST',
       url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: tags,
-        },
-      },
-      headers: {
-        Authorization: `Token ${authToken}`,
-      },
+      body: { article: { title, description, body, tagList: tags } },
+      headers: { Authorization: `Token ${user.token}` },
     }).then((resp) => resp.body.article.slug);
   });
 });
@@ -49,14 +36,13 @@ Cypress.Commands.add('createArticle', (title, description, body, tags = []) => {
 Cypress.Commands.add('deleteArticle', (slug) => {
   return cy.window().then((win) => {
     const user = JSON.parse(win.localStorage.getItem('user'));
-    const authToken = user.token;
-
+    if (!user || !user.token) {
+      throw new Error('User not logged in. Please call cy.login() first.');
+    }
     return cy.request({
       method: 'DELETE',
       url: `/api/articles/${slug}`,
-      headers: {
-        Authorization: `Token ${authToken}`,
-      },
+      headers: { Authorization: `Token ${user.token}` },
     });
   });
 });
