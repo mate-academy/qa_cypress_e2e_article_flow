@@ -16,43 +16,42 @@ Cypress.Commands.add('login', (email, username, password) => {
       token: response.body.user.token,
       username: response.body.user.username,
     };
+
+    // Store user with token in localStorage
     window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
   });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body, tags = []) => {
-  return cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  const user = JSON.parse(window.localStorage.getItem('user'));
+  const authToken = user.token;
 
-    return cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: tags,   // ✅ always use tagList
-        },
+  return cy.request({
+    method: 'POST',
+    url: '/api/articles',
+    body: {
+      article: {
+        title,
+        description,
+        body,
+        tagList: tags,
       },
-      headers: {
-        Authorization: `Token ${authToken}`,
-      },
-    }).then((resp) => resp.body.article.slug); // return slug for chaining
-  });
+    },
+    headers: {
+      Authorization: `Token ${authToken}`,
+    },
+  }).then((resp) => resp.body.article.slug); // return slug for chaining
 });
 
 Cypress.Commands.add('deleteArticle', (slug) => {
-  return cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  const user = JSON.parse(window.localStorage.getItem('user'));
+  const authToken = user.token;
 
-    return cy.request({
-      method: 'DELETE',
-      url: `/api/articles/${slug}`,
-      headers: {
-        Authorization: `Token ${authToken}`,
-      },
-    });
+  return cy.request({
+    method: 'DELETE',
+    url: `/api/articles/${slug}`,
+    headers: {
+      Authorization: `Token ${authToken}`,
+    },
   });
 });
