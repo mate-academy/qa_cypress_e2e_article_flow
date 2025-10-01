@@ -4,9 +4,12 @@ describe('Conduit Article Flow', () => {
   const username = `user_${uniqueId}`;
   const password = 'TestPassword123!';
 
-  // Login before every test to ensure localStorage has the token
+  before(() => {
+    cy.register(email, username, password); // register once
+  });
+
   beforeEach(() => {
-    cy.login(email, username, password);
+    cy.login(email, password); // login before every test
   });
 
   it('should create an article', () => {
@@ -16,7 +19,7 @@ describe('Conduit Article Flow', () => {
       'This is the article body',
       ['cypress', 'testing']
     ).then((slug) => {
-      expect(slug).to.contain('article'); // check that slug exists
+      expect(slug).to.contain('article');
     });
   });
 
@@ -29,7 +32,7 @@ describe('Conduit Article Flow', () => {
       cy.deleteArticle(slug).then((resp) => {
         expect(resp.status).to.eq(204);
 
-        // Verify it's gone
+        // verify article is gone
         cy.request({
           method: 'GET',
           url: `/api/articles/${slug}`,
