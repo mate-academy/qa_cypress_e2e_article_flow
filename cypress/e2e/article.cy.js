@@ -1,52 +1,36 @@
-describe('', () => {
+describe('Article flow', () => {
+  let user;
+  let articleTitle;
+
   before(() => {
+    cy.task('generateUser').then((generatedUser) => {
+      user = generatedUser;
+      cy.login(user.email, user.username, user.password);
+    });
+  });
+
+  beforeEach(() => {
     cy.visit('/');
   });
 
   it('should create article', () => {
     const numberOfArticles = Math.floor(Math.random() * 1000);
-    cy.task('generateUser').then((user) => {
-      cy.login(user.email, user.username, user.password);
+    articleTitle = `Cypress Test ${numberOfArticles}`;
 
-      cy.visit('/');
+    cy.contains(user.username.toLowerCase()).should('be.visible');
 
-      cy.contains(user.username.toLowerCase()).should('be.visible');
+    cy.createArticle(articleTitle, 'Test description', 'Test body');
 
-      cy.createArticle(`Cypress Test ${numberOfArticles}`, 'Test description', 'Test body');
-
-      cy.visit('/');
-      cy.reload();
-      cy.get('.nav > :nth-child(2) > .link').click();
-
-      cy.contains('Cypress Test ' + numberOfArticles).should('be.visible');
-    });
+    cy.get('a.nav-link').contains('Global Feed').click();
+    cy.contains(articleTitle).should('be.visible');
   });
 
   it('should delete article', () => {
-    const numberOfArticles = Math.floor(Math.random() * 1000);
-    cy.task('generateUser').then((user) => {
-      cy.login(user.email, user.username, user.password);
+    cy.get('a.nav-link').contains('Global Feed').click();
+    cy.contains(articleTitle).should('be.visible').click();
 
-      cy.visit('/');
-
-      cy.contains(user.username.toLowerCase()).should('be.visible');
-
-      cy.createArticle(`Cypress Test ${numberOfArticles}`, 'Test description', 'Test body');
-
-      cy.visit('/');
-      cy.reload();
-      cy.get('.nav > :nth-child(2) > .link').click();
-
-      cy.contains('Cypress Test ' + numberOfArticles).should('be.visible');
-
-      cy.get('.col-md-9 > :nth-child(2)').click();
-      // eslint-disable-next-line max-len
-      cy.get('.container > .article-meta > :nth-child(3) > .btn-outline-danger')
-        .click();
-
-      cy.visit('/');
-      cy.get('.nav > :nth-child(2) > .link').click();
-      cy.contains('Cypress Test ' + numberOfArticles).should('not.exist');
-    });
+    cy.get('.article-meta .btn-outline-danger').click();
+    cy.get('a.nav-link').contains('Global Feed').click();
+    cy.contains(articleTitle).should('not.exist');
   });
 });
