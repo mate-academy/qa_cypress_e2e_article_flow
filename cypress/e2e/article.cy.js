@@ -1,6 +1,7 @@
+/// <reference types="cypress" />
+
 describe('Article flow', () => {
   let user;
-  let articleTitle;
 
   before(() => {
     cy.task('generateUser').then((generatedUser) => {
@@ -10,26 +11,38 @@ describe('Article flow', () => {
   });
 
   beforeEach(() => {
-    cy.visit('/');
+    cy.visit('https://conduit.mate.academy/');
   });
 
   it('should create article', () => {
-    const numberOfArticles = Math.floor(Math.random() * 1000);
-    articleTitle = `Cypress Test ${numberOfArticles}`;
+    const uniqueId = Date.now();
+    const articleTitle = `Cypress Test ${uniqueId}`;
+    const articleDescription = `Description ${uniqueId}`;
+    const articleBody = `Body content ${uniqueId}`;
 
-    cy.contains(user.username.toLowerCase()).should('be.visible');
+    cy.contains(user.username).should('be.visible');
 
-    cy.createArticle(articleTitle, 'Test description', 'Test body');
+    cy.createArticle(articleTitle, articleDescription, articleBody);
 
     cy.get('a.nav-link').contains('Global Feed').click();
     cy.contains(articleTitle).should('be.visible');
   });
 
   it('should delete article', () => {
+    const uniqueId = Date.now();
+    const articleTitle = `Cypress Delete Test ${uniqueId}`;
+    const articleDescription = `Delete description ${uniqueId}`;
+    const articleBody = `Delete body ${uniqueId}`;
+
+    cy.contains(user.username).should('be.visible');
+
+    cy.createArticle(articleTitle, articleDescription, articleBody);
+
     cy.get('a.nav-link').contains('Global Feed').click();
     cy.contains(articleTitle).should('be.visible').click();
 
     cy.get('.article-meta .btn-outline-danger').click();
+
     cy.get('a.nav-link').contains('Global Feed').click();
     cy.contains(articleTitle).should('not.exist');
   });
