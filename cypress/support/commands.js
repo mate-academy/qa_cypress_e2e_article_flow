@@ -47,7 +47,8 @@ Cypress.Commands.add('login', (email, username, password) => {
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
+Cypress.Commands.add('createArticle', (title, description, body,
+  tagList = []) => {
   cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
@@ -59,7 +60,7 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           title,
           description,
           body,
-          tagList: []
+          tagList
         }
       },
       headers: {
