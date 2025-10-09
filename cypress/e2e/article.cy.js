@@ -14,9 +14,9 @@ describe('Article flow', () => {
     cy.fixture('example.json').then((article) => {
       const title = `${article.name} ${timestamp}`;
       const description = article.email;
-      const body = article.body;
+      const body = `${article.body} ${timestamp}`;
 
-      cy.visit('/editor');
+      cy.visit('https://conduit.mate.academy/editor');
 
       cy.get('input[placeholder="Article Title"]').type(title);
       cy.get('input[placeholder="What\'s this article about?"]').type(description);
@@ -32,18 +32,16 @@ describe('Article flow', () => {
     cy.fixture('example.json').then((article) => {
       const title = `${article.name} ${timestamp}`;
       const description = article.email;
-      const body = article.body;
+      const body = `${article.body} ${timestamp}`;
 
       cy.createArticle(title, description, body);
 
-      cy.visit(`/@${username}`);
-
+      cy.visit(`https://conduit.mate.academy/@${username}`);
       cy.contains('h1', title).click();
 
       cy.contains('button', 'Delete Article').click();
 
-      cy.contains('h1', title).should('not.exist');
+      cy.get('body').should('not.contain', title);
     });
   });
 });
-
