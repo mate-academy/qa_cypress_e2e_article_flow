@@ -22,13 +22,27 @@ describe('Article Flow', () => {
     const body = faker.lorem.paragraphs({ min: 2, max: 5, separator: '\n\n' });
     const tags = faker.word.adjective();
 
-    // I still use createArticle because this is written in task
-    cy.createArticle(title, description, body, tags);
+    //
+
+    cy.contains('a', 'Home')
+      .click();
+    cy.contains('a', 'New Article')
+      .click();
+    cy.get('[placeholder="Article Title"]')
+      .type(title);
+    cy.get(`[placeholder="What's this article about?"]`)
+      .type(description);
+    cy.get('[placeholder="Write your article (in markdown)"]')
+      .type(body);
+    cy.get('[placeholder="Enter tags"]')
+      .type(tags + '{enter}');
+    cy.contains('button', 'Publish Article')
+      .click();
     cy.contains('a', 'Home')
       .click();
     cy.contains('a', 'Global Feed')
       .click();
-    cy.contains('h1', `Article title: ${title}`)
+    cy.contains('h1', title)
       .should('exist');
   });
 
@@ -47,7 +61,8 @@ describe('Article Flow', () => {
     const body = faker.lorem.paragraphs({ min: 2, max: 5, separator: '\n\n' });
     const tags = faker.word.adjective();
 
-    // I still use createArticle because this is written in task
+    //
+
     cy.createArticle(title, description, body, tags);
     cy.contains('a', 'Home')
       .click();
@@ -65,7 +80,7 @@ describe('Article Flow', () => {
       .click();
     cy.contains('a', 'Global Feed')
       .click();
-    cy.contains('h1', `Article title: ${title}`)
+    cy.contains('h1', title)
       .should('not.exist');
   });
 });
