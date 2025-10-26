@@ -2,8 +2,9 @@ const { defineConfig } = require('cypress');
 const { faker } = require('@faker-js/faker');
 
 module.exports = defineConfig({
+  watchForFileChanges: false,
   e2e: {
-    baseUrl: 'https://conduit.mate.academy/',
+    baseUrl: 'https://conduit.mate.academy',
     setupNodeEvents(on, config) {
       on('task', {
         generateUser() {
