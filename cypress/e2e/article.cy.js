@@ -40,7 +40,6 @@ describe('Article Blog site', () => {
     cy.url().should('contain', '/article/');
 
     cy.contains('button', 'Delete Article').click();
-    /// cy.contains('button', 'OK').click();
     cy.url().should('eq', 'https://conduit.mate.academy/');
     cy.get('.article-preview')
       .should('contain', 'No articles are here... yet.');
