@@ -63,7 +63,8 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
         }
       },
       headers: {
-        Authorization: `Token ${authToken}`
+        Authorization: `Token ${authToken}`,
+        'Content-Type': 'application/json'
       }
     });
   });
