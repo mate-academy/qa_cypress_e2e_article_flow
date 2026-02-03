@@ -24,47 +24,36 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+Cypress.Commands.add('login', (email, password) => {
+  cy.visit('#/login');
 
-Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
-  });
+  cy.get('input[type="email"]')
+    .type(email);
+
+  cy.get('input[type="password"]')
+    .type(password);
+
+  cy.contains('button', 'Sign in')
+    .click();
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+Cypress.Commands.add('createArticle', (article) => {
+  cy.contains('a', 'New Article')
+    .click();
 
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
-        }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
-      }
-    });
-  });
+  cy.get('input[placeholder="Article Title"]')
+    .type(article.title);
+
+  cy.get('input[placeholder="What\'s this article about?"]')
+    .type(article.description);
+
+  cy.get('textarea[placeholder="Write your article (in markdown)"]')
+    .type(article.body);
+
+  cy.get('input[placeholder="Enter tags"]')
+    .type(article.tag)
+    .type('{enter}');
+
+  cy.contains('button', 'Publish Article')
+    .click();
 });
