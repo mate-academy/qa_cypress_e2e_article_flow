@@ -5,31 +5,42 @@ describe('article\'s flow testing', () => {
   let user;
 
   beforeEach(() => {
-    return cy.task('generateUser').then((u) => {
+    cy.task('generateUser').then((u) => {
       user = u;
-      return cy.login(user.email, user.username, user.password);
+      cy.login(user.email, user.username, user.password);
     }).then(() => {
-      return cy.task('generateArticle');
+      cy.task('generateArticle');
     }).then((a) => {
       article = a;
-      return cy.createArticle(article.title, article.description, article.body);
-    }).then(() => {
-      cy.intercept('GET', '**/api/articles*').as('getArticles');
-
-      cy.visit('/');
-      cy.contains('.nav-link', 'Global Feed').click();
     });
   });
 
   it('should create article', () => {
-    cy.wait('@getArticles');
+    cy.visit('/');
+    cy.contains('a.nav-link', 'New Article').click();
+    cy.findByPlaceholder('Article Title').type(article.title);
+    cy.findByPlaceholder('What\'s this article about?')
+      .type(article.description);
+    cy.findByPlaceholder('Write your article (in markdown)')
+      .type(article.body);
+
+    cy.contains('button', 'Publish Article').click();
+
     cy.contains('.author', user.username.toLowerCase());
-    cy.contains('h1', `Article title: ${article.title}`).should('be.visible');
+    cy.contains('h1', article.title).should('be.visible');
   });
 
   it('should delete article', () => {
-    cy.wait('@getArticles');
-    cy.contains('h1', `Article title: ${article.title}`).click();
+    cy.createArticle(article.title, article.description, article.body);
+    cy.visit('/');
+    cy.contains('.nav-link', 'Global Feed').click();
+    cy.contains('a.preview-link h1', article.title).click();
     cy.contains('button', ' Delete Article').click();
+
+    cy.contains('.nav-link', 'Global Feed').click();
+    cy.get('a.preview-link h1').should((els) => {
+      const texts = [...els].map((el) => el.textContent);
+      expect(texts).to.not.include(article.title);
+    });
   });
 });

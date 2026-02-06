@@ -17,7 +17,7 @@ module.exports = defineConfig({
         },
 
         generateArticle() {
-          const title = faker.lorem.lines({ min: 1, max: 3 });
+          const title = faker.lorem.sentence();
           const description = faker.lorem.lines(2);
           const body = faker.lorem.lines();
           return {
