@@ -8,9 +8,8 @@ describe('article\'s flow testing', () => {
     cy.task('generateUser').then((u) => {
       user = u;
       cy.login(user.email, user.username, user.password);
-    }).then(() => {
-      cy.task('generateArticle');
-    }).then((a) => {
+    });
+    cy.task('generateArticle').then((a) => {
       article = a;
     });
   });
@@ -37,7 +36,6 @@ describe('article\'s flow testing', () => {
     cy.contains('a.preview-link h1', article.title).click();
     cy.contains('button', ' Delete Article').click();
 
-    cy.contains('.nav-link', 'Global Feed').click();
     cy.get('a.preview-link h1').should((els) => {
       const texts = [...els].map((el) => el.textContent);
       expect(texts).to.not.include(article.title);
