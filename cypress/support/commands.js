@@ -65,6 +65,21 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
       headers: {
         Authorization: `Token ${authToken}`
       }
+    }).then((res) => {
+      return res.body.article.slug;
+    });
+  });
+});
+Cypress.Commands.add('deleteArticle', (slug) => {
+  cy.getCookie('auth').then((token) => {
+    const authToken = token.value;
+
+    cy.request({
+      method: 'DELETE',
+      url: `/api/articles/${slug}`,
+      headers: {
+        Authorization: `Token ${authToken}`
+      }
     });
   });
 });

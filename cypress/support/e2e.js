@@ -15,6 +15,19 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
+const { faker } = require('@faker-js/faker');
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+export function generateUserData() {
+  const randomNumber = Math.floor(Math.random() * 1000);
+  const email = `test${Date.now()}@gmail.com`;
+  const username = faker.person.firstName() + randomNumber;
+  const password = `test${Date.now()}`;
+  return {
+    email,
+    username,
+    password
+  };
+}
