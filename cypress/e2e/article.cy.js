@@ -13,16 +13,18 @@ describe('Artic flow', () => {
   });
 
   it('create article', () => {
+    const { title, description, body } = createArticle();
+
     cy.visit('/editor');
 
-    cy.get('[placeholder="Article Title"]').type('My title');
-    cy.get(`[placeholder="What's this article about?"]`).type('About my title');
-    cy.get(`[placeholder="Write your article (in markdown)"]`).type('Title about my title');
+    cy.get('[placeholder="Article Title"]').type(title);
+    cy.get(`[placeholder="What's this article about?"]`).type(description);
+    cy.get(`[placeholder="Write your article (in markdown)"]`).type(body);
     cy.get(`[placeholder="Enter tags"]`).type('Title{Enter}Article{Enter}Markdown{Enter}');
 
     cy.contains('.btn', 'Publish Article').click();
 
-    cy.contains('h1', 'My title');
+    cy.contains('h1', title);
   });
 
   it('delete article', () => {
