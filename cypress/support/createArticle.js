@@ -1,5 +1,5 @@
 function createArticle() {
-  const id = new Date();
+  const id = new Date().getMilliseconds();
   const title = `Test Article Title ${id}`;
   const description = `This is a short description for testing purposes ${id}`;
   const body =
