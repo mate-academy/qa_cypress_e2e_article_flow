@@ -6,7 +6,6 @@ describe('Article flow', () => {
   beforeEach(() => {
     cy.task('generateUser').then(({ email, username, password }) => {
       cy.login(email, username, password);
-      cy.visit('/');
     });
   });
 
