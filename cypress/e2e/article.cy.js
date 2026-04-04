@@ -1,15 +1,15 @@
 /// <reference types='cypress' />
 
 const { createArticle } = require('../support/createArticle');
-const { createUser } = require('../support/createUser');
 
 describe('Artic flow', () => {
   beforeEach(() => {
     cy.visit('/');
 
-    const { email, username, password } = createUser();
-
-    cy.login(email, username, password);
+    cy.task('generateUser')
+      .then(
+        ({ email, username, password }) => (cy.login(email, username, password))
+      );
   });
 
   it('create article', () => {
