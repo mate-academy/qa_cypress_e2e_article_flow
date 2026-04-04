@@ -2,17 +2,15 @@
 
 const { createArticle } = require('../support/createArticle');
 
-describe('Artic flow', () => {
+describe('Article flow', () => {
   beforeEach(() => {
-    cy.visit('/');
-
-    cy.task('generateUser')
-      .then(
-        ({ email, username, password }) => (cy.login(email, username, password))
-      );
+    cy.task('generateUser').then(({ email, username, password }) => {
+      cy.login(email, username, password);
+      cy.visit('/');
+    });
   });
 
-  it('create article', () => {
+  it('should create article', () => {
     const { title, description, body } = createArticle();
 
     cy.visit('/editor');
@@ -27,7 +25,7 @@ describe('Artic flow', () => {
     cy.contains('h1', title);
   });
 
-  it('delete article', () => {
+  it('should delete article', () => {
     const { title, description, body } = createArticle();
 
     cy.createArticle(title, description, body);
