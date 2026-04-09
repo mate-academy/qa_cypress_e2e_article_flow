@@ -1,18 +1,19 @@
 describe('Article flow', () => {
-  let user;
   let article;
 
   beforeEach(() => {
     cy.task('generateUser').then((generatedUser) => {
-      user = generatedUser;
-
       article = {
         title: `Test article ${Date.now()}`,
         description: `Test description ${Date.now()}`,
         body: `Test body ${Date.now()}`
       };
 
-      cy.login(user.email, user.username, user.password);
+      cy.login(
+        generatedUser.email,
+        generatedUser.username,
+        generatedUser.password
+      );
     });
   });
 
@@ -35,14 +36,16 @@ describe('Article flow', () => {
   });
 
   it('should delete an article', () => {
-    cy.createArticle(article.title, article.description, article.body);
+    cy.createArticle(article.title, article.description, article.body)
+      .then((response) => {
+        const { slug } = response.body.article;
 
-    cy.visit('/');
-    cy.contains('Global Feed').click();
+        cy.visit(`/article/${slug}`);
+        cy.url().should('include', slug);
 
-    cy.contains(article.title).should('be.visible').click();
-    cy.contains('Delete Article').should('be.visible').click();
+        cy.contains('Delete Article').should('be.visible').click();
 
-    cy.url().should('eq', 'https://conduit.mate.academy/');
+        cy.url().should('eq', 'https://conduit.mate.academy/');
+      });
   });
 });
