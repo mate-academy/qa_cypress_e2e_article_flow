@@ -24,34 +24,52 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+const imgUrl =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  return cy.request('POST', '/api/users', {
     user: {
       email,
       username,
       password
     }
   }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+    const token = response.body.user.token;
+
+    return cy.request({
+      method: 'PUT',
+      url: '/api/user',
+      headers: {
+        Authorization: `Token ${token}`
+      },
+      body: {
+        user: {
+          image: imgUrl
+        }
+      }
+    }).then(() => {
+      const user = {
+        bio: response.body.user.bio,
+        effectiveImage: imgUrl,
+        email: response.body.user.email,
+        image: imgUrl,
+        token,
+        username: response.body.user.username
+      };
+
+      window.localStorage.setItem('user', JSON.stringify(user));
+
+      return cy.setCookie('auth', token).then(() => response);
+    });
   });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
+  return cy.getCookie('auth').then((token) => {
     const authToken = token.value;
 
-    cy.request({
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
       body: {
