@@ -27,7 +27,7 @@
 const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
+  return cy.request('POST', '/api/users', {
     user: {
       email,
       username,
@@ -42,31 +42,34 @@ Cypress.Commands.add('login', (email, username, password) => {
       token: response.body.user.token,
       username: response.body.user.username
     };
-    window.localStorage.setItem('user', JSON.stringify(user));
+    window.localStorage.setItem(
+      'user', JSON.stringify(user)
+    );
     cy.setCookie('auth', response.body.user.token);
   });
 });
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+  return cy.getCookie('auth').should('exist')
+    .then((token) => {
+      const authToken = token.value;
 
-    return cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
+      return cy.request({
+        method: 'POST',
+        url: '/api/articles',
+        body: {
+          article: {
+            title,
+            description,
+            body,
+            tagList: []
+          }
+        },
+        headers: {
+          Authorization: `Token ${authToken}`
         }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
-      }
+      });
+    }).then((response) => {
+      return response.body.article;
     });
-  }).then((response) => {
-    return response.body.article;
-  });
 });
