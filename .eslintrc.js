@@ -10,6 +10,9 @@ module.exports = {
   ],
   overrides: [
   ],
+  ignorePatterns: [
+    'cypress/support/index.d.ts'
+  ],
   parserOptions: {
     ecmaVersion: 'latest'
   },
