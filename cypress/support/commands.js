@@ -49,6 +49,7 @@ Cypress.Commands.add('login', (email, username, password) => {
 
 Cypress.Commands.add('createArticle', (title, description, body) => {
   cy.getCookie('auth').then((token) => {
+    if (!token) return;
     const authToken = token.value;
 
     cy.request({
