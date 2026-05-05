@@ -51,7 +51,7 @@ describe("should create and delete article", () => {
     const { title = "", description, content } = generateArticleData();
     cy.createArticle(title, description, content);
     cy.visit(`https://conduit.mate.academy/profile/${user.username}`);
-    cy.contains("h1", title).click();
+    cy.contains(title).click();
     cy.on("window:confirm", () => true);
     cy.contains("button", "Delete Article").click();
     cy.visit(`https://conduit.mate.academy/profile/${user.username}`);
