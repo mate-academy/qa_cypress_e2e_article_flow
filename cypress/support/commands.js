@@ -1,59 +1,65 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
-
 Cypress.Commands.add('login', (email, username, password) => {
-  cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
+  cy.request({
+    method: 'POST',
+    url: '/api/users',
+    body: {
+      user: {
+        email,
+        username,
+        password
+      }
     }
   }).then((response) => {
+    expect(response.status).to.eq(200);
+
+    const loggedUser = response.body.user;
+
     const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
+      bio: loggedUser.bio,
+      effectiveImage:
+        'https://static.productionready.io/images/smiley-cyrus.jpg',
+      email: loggedUser.email,
+      image: loggedUser.image,
+      token: loggedUser.token,
+      username: loggedUser.username
     };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+
+    Cypress.env('token', loggedUser.token);
+
+    cy.visit('/');
+
+    cy.window().then((win) => {
+      win.localStorage.setItem(
+        'user',
+        JSON.stringify(user)
+      );
+    });
+
+    cy.setCookie('auth', loggedUser.token);
+
+    cy.reload();
+
+    cy.contains(loggedUser.username)
+      .should('be.visible');
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+Cypress.Commands.add(
+  'createArticle',
+  (title, description, body) => {
+    const token = Cypress.env('token');
 
-    cy.request({
+    assert.isDefined(
+      token,
+      'Authorization token should exist'
+    );
+
+    return cy.request({
       method: 'POST',
       url: '/api/articles',
+      headers: {
+        Authorization: `Token ${token}`
+      },
       body: {
         article: {
           title,
@@ -61,10 +67,11 @@ Cypress.Commands.add('createArticle', (title, description, body) => {
           body,
           tagList: []
         }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
       }
+    }).then((response) => {
+      expect(response.status).to.be.oneOf([200, 201]);
+
+      return response.body.article;
     });
-  });
-});
+  }
+);
