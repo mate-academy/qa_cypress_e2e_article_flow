@@ -7,11 +7,11 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       on('task', {
         generateUser() {
-          const email = faker.internet.email();
-          const randomNumber = Math.floor(Math.random(1000) * 1000);
+          const uniqueId = faker.string.uuid();
+
           return {
-            username: faker.person.firstName() + randomNumber,
-            email: email.toLowerCase(),
+            username: `qa_${uniqueId.replace(/-/g, '').slice(0, 16)}`,
+            email: `qa_${uniqueId}@example.com`,
             password: '12345Qwert!'
           };
         }
