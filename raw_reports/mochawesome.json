@@ -1,0 +1,129 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 1,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-10-10T16:10:04.461Z",
+    "end": "2026-10-10T16:10:12.753Z",
+    "duration": 8292,
+    "testsRegistered": 2,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "57cba70e-29d8-435e-95fe-44461eec841a",
+      "title": "",
+      "fullFile": "cypress\\e2e\\article.cy.js",
+      "file": "cypress\\e2e\\article.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "92e93681-0434-4507-84ec-2ca692cea5b5",
+          "title": "Article flow",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should create an article",
+              "fullTitle": "Article flow should create an article",
+              "timedOut": null,
+              "duration": 7797,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\ncy.get('a[href*=\"editor\"]').first().click();\ncy.get('input[placeholder=\"Article Title\"]').type(title);\ncy.get('input[placeholder=\"What\\'s this article about?\"]').type(description);\ncy.get('textarea[placeholder=\"Write your article (in markdown)\"]').type(body);\ncy.contains('button', 'Publish Article').click();\ncy.contains('h1', title).should('be.visible');\ncy.contains(body).should('be.visible');",
+              "err": {},
+              "uuid": "6e13c079-0282-4137-8c04-76eb534a057e",
+              "parentUUID": "92e93681-0434-4507-84ec-2ca692cea5b5",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should delete an article",
+              "fullTitle": "Article flow should delete an article",
+              "timedOut": null,
+              "duration": 287,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.createArticle(title, description, body);\ncy.visit('/');\ncy.contains('a.preview-link', title).click();\ncy.contains('button', 'Delete Article').click();\ncy.contains('h1', title).should('not.exist');",
+              "err": {
+                "message": "TypeError: Cannot read properties of null (reading 'value')",
+                "estack": "TypeError: Cannot read properties of null (reading 'value')\n    at Context.eval (webpack://react_redux-list-of-posts/./cypress/support/commands.js:52:28)",
+                "diff": null
+              },
+              "uuid": "a99995ef-e418-4292-9dbb-05de5239674f",
+              "parentUUID": "92e93681-0434-4507-84ec-2ca692cea5b5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "6e13c079-0282-4137-8c04-76eb534a057e"
+          ],
+          "failures": [
+            "a99995ef-e418-4292-9dbb-05de5239674f"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 8084,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "raw_reports",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}
