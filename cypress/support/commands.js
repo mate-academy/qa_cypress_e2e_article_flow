@@ -1,70 +1,60 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+// cypress/support/commands.js
 
-const imgUrl = 'https://static.productionready.io/images/smiley-cyrus.jpg';
-
-Cypress.Commands.add('login', (email, username, password) => {
+// 1. Command to register a new user via API
+Cypress.Commands.add('register', (username, email, password) => {
   cy.request('POST', '/api/users', {
-    user: {
-      email,
-      username,
-      password
-    }
-  }).then((response) => {
-    const user = {
-      bio: response.body.user.bio,
-      effectiveImage: imgUrl,
-      email: response.body.user.email,
-      image: response.body.user.image,
-      token: response.body.user.token,
-      username: response.body.user.username
-    };
-    window.localStorage.setItem('user', JSON.stringify(user));
-    cy.setCookie('auth', response.body.user.token);
+    user: { username, email, password }
   });
 });
 
-Cypress.Commands.add('createArticle', (title, description, body) => {
-  cy.getCookie('auth').then((token) => {
-    const authToken = token.value;
+// 2. Command to log in via the UI Modal and extract the token from the cookie
+Cypress.Commands.add('login', (email, password) => {
+  cy.visit('/');
 
-    cy.request({
-      method: 'POST',
-      url: '/api/articles',
-      body: {
-        article: {
-          title,
-          description,
-          body,
-          tagList: []
-        }
-      },
-      headers: {
-        Authorization: `Token ${authToken}`
+  // Click the "Sign in" link in the navigation bar
+  cy.contains('Sign in').click();
+
+  // Fill out the login form in the modal
+  cy.get('input[placeholder="Email"]').type(email);
+  cy.get('input[placeholder="Password"]').type(password);
+  cy.get('button[type="submit"]').click();
+
+  // Assert that we successfully logged in
+  cy.contains('New Article', { timeout: 10000 }).should('be.visible');
+
+  // UPDATED: Extract the token from the 'auth' cookie
+  cy.getCookie('auth').then((cookie) => {
+    if (cookie) {
+      Cypress.env('authToken', cookie.value);
+    } else {
+      // Fallback to localStorage just in case
+      cy.window().then((win) => {
+        Cypress.env('authToken', win.localStorage.getItem('jwt'));
+      });
+    }
+  });
+});
+
+// 3. Command to create an article programmatically via API
+Cypress.Commands.add('createArticle', (article) => {
+  // Retrieve the token saved during UI login
+  const token = Cypress.env('authToken');
+
+  cy.request({
+    method: 'POST',
+    url: '/api/articles',
+    headers: {
+      Authorization: `Token ${token}`
+    },
+    body: {
+      article: {
+        title: article.title,
+        description: article.description,
+        body: article.body,
+        tagList: article.tagList || []
       }
-    });
+    }
+  }).then((response) => {
+    return response.body.article;
   });
 });
